@@ -1,7 +1,8 @@
 var supports = require('./Utils/Supports');
 
 var scene = require('./Utils/Scene').create();
-var camera = require('./Utils/Camera').create();
+var cameraUtils = require('./Utils/Camera');
+var camera = cameraUtils.create();
 var listenerUtils = require('./Utils/Listener');
 var listener = listenerUtils.create(camera);
 var rendererUtils = require('./Utils/Renderer');
@@ -63,3 +64,13 @@ var render = function() {
 };
 
 render();
+
+/**
+ * On Window Resize
+ */
+window.addEventListener( 'resize', onWindowResize, false );
+function onWindowResize() {
+    cameraUtils.handleResize();
+    rendererUtils.handleResize();
+    //controls.handleResize();
+}

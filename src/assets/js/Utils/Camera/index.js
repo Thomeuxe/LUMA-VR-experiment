@@ -4,6 +4,11 @@ var Camera = {
         this.camera.position.z = 10;
 
         return this.camera
+    },
+
+    handleResize: function () {
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
     }
 };
 

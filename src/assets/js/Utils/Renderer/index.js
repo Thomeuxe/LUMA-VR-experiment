@@ -12,6 +12,10 @@ var Renderer = {
         this.cbEffect.setSize( window.innerWidth, window.innerHeight );
 
         return this.cbEffect;
+    },
+
+    handleResize: function () {
+        this.renderer.setSize( window.innerWidth, window.innerHeight );
     }
 };
 
