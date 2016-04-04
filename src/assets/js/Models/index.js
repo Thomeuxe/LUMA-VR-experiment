@@ -12,11 +12,11 @@ var Models = {
                 //var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 
                 for(var i = 0; i < 50; i++) {
-                    var object = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial( { color: 0x00ff00 } ));
+                    var object = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial( { color: 0x00ff00, specular: 0x009900, shininess: 70, shading: THREE.FlatShading } ));
 
-                    object.position.x = Math.random() * 100 - 50;
-                    object.position.y = Math.random() * 100 - 50;
-                    object.position.z = Math.random() * 100 - 50;
+                    object.position.x = Math.random() * 60 - 30;
+                    object.position.y = Math.random() * 60 - 30;
+                    object.position.z = Math.random() * 60 - 30;
 
                     scene.add(object);
                 }

@@ -3,6 +3,7 @@ var supports = require('./Utils/Supports');
 var scene = require('./Utils/Scene').create();
 var cameraUtils = require('./Utils/Camera');
 var camera = cameraUtils.create();
+scene.add(camera);
 var listenerUtils = require('./Utils/Listener');
 var listener = listenerUtils.create(camera);
 var rendererUtils = require('./Utils/Renderer');
@@ -11,6 +12,10 @@ var renderer = rendererUtils.create();
 var terrain = require('./Terrain').create(scene, camera, renderer);
 var sounds = require('./Sounds').create(listener);
 var monkey = require('./Models').test(scene);
+
+var lights = require('./Models/lights.js');
+
+lights.addAsChild(camera, scene);
 
 var controls;
 var fRenderer;
