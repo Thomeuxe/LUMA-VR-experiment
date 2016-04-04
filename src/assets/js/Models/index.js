@@ -1,10 +1,29 @@
 var Models = {
     test: function (scene) {
-        var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-        var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-        var cube = new THREE.Mesh( geometry, material );
-        scene.add( cube );
-        return cube;
+        // instantiate a loader
+        var loader = new THREE.JSONLoader();
+
+        // load a resource
+        loader.load(
+            // resource URL
+            'assets/js/Models/monkey.json',
+            // Function when resource is loaded
+            function (geometry, materials) {
+                var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+
+                for(var i = 0; i < 50; i++) {
+                    var object = new THREE.Mesh(geometry, material);
+
+                    object.position.x = Math.random() * 100 - 50;
+                    object.position.y = Math.random() * 100 - 50;
+                    object.position.z = Math.random() * 100 - 50;
+
+                    scene.add(object);
+                }
+
+                return;
+            }
+        );
     }
 };
 
