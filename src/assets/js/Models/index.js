@@ -6,7 +6,7 @@ var Models = {
         // load a resource
         loader.load(
             // resource URL
-            'assets/js/Models/monkey.json',
+            'assets/js/Models/fish.json',
             // Function when resource is loaded
             function (geometry, materials) {
                 var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
