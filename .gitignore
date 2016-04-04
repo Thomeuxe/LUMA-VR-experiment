@@ -2,3 +2,4 @@ node_modules
 src/assets/css
 build
 .idea
+main.browserify.js
