@@ -7,6 +7,7 @@ var terrain = require('./Terrain').create(scene, camera, renderer);
 var sounds = require('./Sounds').create(listener);
 var monkey = require('./Models').test(scene);
 var controls = require('./Controls').create(camera);
+var mouseControls = require('./Controls').createMouse(camera, renderer);
 var UI = require('./UI');
 
 console.log(scene);
@@ -28,6 +29,8 @@ var render = function() {
     requestAnimationFrame(render);
 
     controls.update();
+    mouseControls.update();
+
     renderer.render(scene, camera);
 };
 
