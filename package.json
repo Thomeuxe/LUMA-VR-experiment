@@ -1,7 +1,7 @@
 {
-  "name": "experimentStarterKit",
+  "name": "LUMA-VR-experiment",
   "version": "1.0.0",
-  "description": "Experiment",
+  "description": "LUMA VR experiment made by DΣIS",
   "main": "gulpfile.js",
   "dependencies": {},
   "devDependencies": {
@@ -29,6 +29,6 @@
   "scripts": {
     "postinstall": "node_modules/.bin/bower install"
   },
-  "author": "Thomas Lecoeur",
+  "author": "DΣIS",
   "license": "ISC"
 }
