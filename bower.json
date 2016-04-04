@@ -17,5 +17,6 @@
   ],
   "devDependencies": {},
   "dependencies": {
+    "three.js": "^0.75.0"
   }
 }
