@@ -1,6 +1,14 @@
 var Camera = {
     create: function() {
-        return new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
+        this.camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
+
+        this.initListener();
+
+        return this.camera
+    },
+    initListener: function () {
+        this.listener = new THREE.AudioListener();
+        this.camera.add( this.listener );
     }
 };
 
