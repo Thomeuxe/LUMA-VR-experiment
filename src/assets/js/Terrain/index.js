@@ -1,5 +1,5 @@
 var Terrain = {
-    
+
     create: function(scene, camera, renderer) {
         var axes = new THREE.AxisHelper(100);
         scene.add(axes);
@@ -22,5 +22,4 @@ var Terrain = {
         renderer.render(scene, camera);
     }
 };
-Terrain.test();
-// exports.module = Terrain;
+exports.module = Terrain;

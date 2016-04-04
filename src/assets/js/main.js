@@ -11,6 +11,7 @@ var UI = require('./UI');
 var render = function() {
     requestAnimationFrame(render);
 
+    controls.update();
     renderer.render(scene, camera);
 };
 
