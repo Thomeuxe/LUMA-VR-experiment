@@ -3,6 +3,8 @@ var Sounds = {
     this.listener = listener;
 
     this.initAmbientSound();
+
+    return this;
   },
   initAmbientSound: function () {
     this.ambient = new THREE.Audio( this.listener );

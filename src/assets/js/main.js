@@ -1,6 +1,7 @@
 var scene = require('./Utils/Scene').create();
 var camera = require('./Utils/Camera').create();
-var listener = require('./Utils/Listener').create(camera);
+var listenerUtils = require('./Utils/Listener');
+var listener = listenerUtils.create(camera);
 var rendererUtils = require('./Utils/Renderer');
 var renderer = rendererUtils.create();
 var cbEffect = rendererUtils.setCardboardEffect();
@@ -14,7 +15,10 @@ var UI = require('./UI');
 
 console.log(scene);
 
-var toggleFullScreenBtn = document.getElementById('toggleFullScreen');
+/**
+ * FullScreen Toggle Button
+ */
+var toggleFullScreenBtn = document.getElementById('toggleFullScreenBtn');
 toggleFullScreenBtn.addEventListener('click', toggleFullScreen);
 function toggleFullScreen (){
     var domElem = renderer.domElement;
@@ -27,6 +31,18 @@ function toggleFullScreen (){
     }
 }
 
+/**
+ * Audio Toggle Button
+ */
+var toggleAudioBtn = document.getElementById('toggleAudioBtn');
+toggleAudioBtn.addEventListener('click', toggleAudio);
+function toggleAudio(){
+    listenerUtils.toggle();
+}
+
+/**
+ * Render
+ */
 var render = function() {
     requestAnimationFrame(render);
 
