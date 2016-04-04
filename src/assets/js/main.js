@@ -1,16 +1,27 @@
+var supports = require('./Utils/Supports');
+
 var scene = require('./Utils/Scene').create();
 var camera = require('./Utils/Camera').create();
 var listenerUtils = require('./Utils/Listener');
 var listener = listenerUtils.create(camera);
 var rendererUtils = require('./Utils/Renderer');
 var renderer = rendererUtils.create();
-var cbEffect = rendererUtils.setCardboardEffect();
 
 var terrain = require('./Terrain').create(scene, camera, renderer);
 var sounds = require('./Sounds').create(listener);
 var monkey = require('./Models').test(scene);
-var controls = require('./Controls').create(camera);
-var mouseControls = require('./Controls').createMouse(camera, renderer);
+
+var controls;
+var fRenderer;
+
+if(supports.isMobile()) {
+    controls = require('./Controls').create(camera);
+    fRenderer = rendererUtils.setCardboardEffect();
+} else {
+    controls = require('./Controls').createMouse(camera, renderer);
+    fRenderer = renderer;
+}
+
 var UI = require('./UI');
 
 console.log(scene);
@@ -47,9 +58,8 @@ var render = function() {
     requestAnimationFrame(render);
 
     controls.update();
-    //mouseControls.update();
 
-    cbEffect.render(scene, camera);
+    fRenderer.render(scene, camera);
 };
 
 render();
