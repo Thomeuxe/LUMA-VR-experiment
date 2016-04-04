@@ -15,6 +15,7 @@ const pngquant = require('imagemin-pngquant');
 var clean = require('gulp-clean');
 var htmlmin = require('gulp-htmlmin');
 var argv = require('yargs').argv;
+var browserify = require('gulp-browserify');
 
 
 /**********************
@@ -126,6 +127,14 @@ gulp.task('inject', ['sass'], function () {
     return target.pipe(inject(sources, {relative: true}))
         .pipe(inject(bowerFiles, {relative: true, name: 'bower'}))
         .pipe(gulp.dest(DIR.src));
+});
+
+gulp.task('scripts', function() {
+    gulp.src('src/assets/js/main.js')
+        .pipe(browserify({
+            insertGlobals : true
+        }))
+        .pipe(gulp.dest('./build/js'))
 });
 
 
