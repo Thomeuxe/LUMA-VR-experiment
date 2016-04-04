@@ -1,0 +1,6 @@
+{
+  "directory": "src/assets/vendors/",
+  "scripts": {
+    "postinstall": "node_modules/.bin/gulp inject"
+  }
+}

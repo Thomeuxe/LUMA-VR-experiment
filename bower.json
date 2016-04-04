@@ -1,0 +1,21 @@
+{
+  "name": "experiment",
+  "description": "Experiment",
+  "main": "gulpfile.js",
+  "authors": [
+    "Thomas Lecoeur <tlecoeur@agencenetdesign.com>"
+  ],
+  "license": "ISC",
+  "moduleType": [],
+  "homepage": "src/index.html",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {},
+  "dependencies": {
+  }
+}

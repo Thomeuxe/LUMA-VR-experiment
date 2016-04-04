@@ -1,0 +1,242 @@
+var gulp = require('gulp');
+var browserSync = require('browser-sync').create();
+var inject = require('gulp-inject');
+var mainBowerFiles = require('main-bower-files');
+var sass = require('gulp-sass');
+var cleanCSS = require('gulp-clean-css');
+var autoprefixer = require('gulp-autoprefixer');
+var sourcemaps = require('gulp-sourcemaps');
+var uncss = require('gulp-uncss');
+var uglify = require('gulp-uglify');
+var concat = require('gulp-concat');
+var gulpFilter = require('gulp-filter');
+const imagemin = require('gulp-imagemin');
+const pngquant = require('imagemin-pngquant');
+var clean = require('gulp-clean');
+var htmlmin = require('gulp-htmlmin');
+var argv = require('yargs').argv;
+
+
+/**********************
+ *
+ * PATH AND FILES VARIABLES
+ *
+ *********************/
+
+var DIR = {};
+DIR.src = "./src";
+DIR.build = "./build";
+DIR.assets = DIR.src + "/assets";
+DIR.sass = DIR.assets + "/scss";
+DIR.css = DIR.assets + "/css";
+DIR.images = DIR.assets + "/img";
+DIR.js = DIR.assets + "/js";
+DIR.vendors = DIR.assets + "/vendors"; // Sync this path with bower FILES directory (in .bowerrc)
+
+var FILES = {
+    watchable: DIR.src + "/**/*.{html,php}",
+    inject: DIR.src + "/**/*.{html,php}",
+    css: DIR.css + "/*.css",
+    sass: DIR.sass + "/*.scss",
+    js: DIR.js + "/**/*.js",
+    images: DIR.images + "/**/*",
+    svg: DIR.src + "/img/**/*.svg",
+    build: DIR.build + "**/*"
+};
+
+
+/**********************
+ *
+ * DEV TASKS
+ *
+ *********************/
+
+
+/********
+ * Serve task
+ */
+
+gulp.task('serve', ['imagemin', 'sass', 'inject'], function () {
+
+    if (argv.env == "prod") {
+        browserSync.init({
+            server: DIR.build
+        });
+    } else {
+        browserSync.init({
+            server: DIR.src
+        });
+
+        gulp.watch(FILES.sass, ['sass']);
+        gulp.watch([FILES.watchable, FILES.js, FILES.watchable]).on('change', browserSync.reload);
+    }
+});
+
+
+/********
+ * SASS compilation task
+ */
+
+gulp.task('sass', function () {
+    return gulp.src(FILES.sass)
+        .pipe(sourcemaps.init())
+        .pipe(sass().on('error', sass.logError))
+        .pipe(autoprefixer())
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest(DIR.css))
+        .pipe(browserSync.stream());
+});
+
+
+/********
+ * Image Optimization task
+ */
+
+gulp.task('imagemin', function () {
+    return gulp.src(FILES.images)
+        .pipe(imagemin({
+            progressive: true,
+            svgoPlugins: [
+                {removeViewBox: false},
+                {cleanupIDs: false}
+            ],
+            use: [pngquant()]
+        }))
+        .pipe(gulp.dest(DIR.images));
+});
+
+
+/********
+ * Script and style injection task
+ */
+
+gulp.task('inject', ['sass'], function () {
+    var target = gulp.src(FILES.inject);
+
+    var bowerFiles = gulp.src(mainBowerFiles({
+        paths: {
+            bowerDirectory: DIR.vendors,
+            bowerrc: '.bowerrc',
+            bowerJson: 'bower.json'
+        }
+    }), {read: false});
+
+    var sources = gulp.src([FILES.js + "", FILES.css + ""], {read: false});
+
+    return target.pipe(inject(sources, {relative: true}))
+        .pipe(inject(bowerFiles, {relative: true, name: 'bower'}))
+        .pipe(gulp.dest(DIR.src));
+});
+
+
+/**********************
+ *  _                _
+ * /!\ DEFAULT TASK /!\
+ * ¯¯¯              ¯¯¯
+ *********************/
+
+gulp.task('src-build', ['imagemin', 'sass', 'inject']);
+
+gulp.task('default', ['serve']);
+
+
+/**********************
+ *  _                    _
+ * /!\ PRODUCTION TASKS /!\
+ * ¯¯¯                  ¯¯¯
+ *********************/
+
+
+/********
+ * Clean build directory
+ */
+
+gulp.task('build-clean', function () {
+    return gulp.src(FILES.build, {read: false})
+        .pipe(clean({force: true}));
+});
+
+/********
+ *
+ * Build vendors scripts
+ */
+
+gulp.task('build-vendors', ['src-build', 'build-clean'], function () {
+
+    var filterJS = gulpFilter('**/*.js', {restore: true});
+    var filterCSS = gulpFilter('**/*.css', {restore: true});
+
+    return gulp.src(mainBowerFiles({
+            paths: {
+                bowerDirectory: FILES.vendors,
+                bowerrc: '.bowerrc',
+                bowerJson: 'bower.json'
+            }
+        }))
+        .pipe(filterJS)
+        .pipe(concat('vendors.min.js'))
+        .pipe(uglify())
+        .pipe(filterJS.restore)
+        .pipe(filterCSS)
+        .pipe(concat('vendors.min.css'))
+        .pipe(cleanCSS({compatibility: 'ie8'}))
+        .pipe(filterCSS.restore)
+        .pipe(gulp.dest(DIR.build + "/assets"));
+});
+
+/********
+ *
+ * Build user custom scripts and styles
+ */
+
+gulp.task('build-scripts', ['src-build', 'build-clean'], function () {
+
+    var filterJS = gulpFilter('**/*.js', {restore: true});
+    var filterCSS = gulpFilter('**/*.css', {restore: true});
+
+    return gulp.src([FILES.js, FILES.css])
+        .pipe(filterJS)
+        .pipe(concat('scripts.min.js'))
+        .pipe(uglify())
+        .pipe(filterJS.restore)
+        .pipe(filterCSS)
+        .pipe(concat('styles.min.css'))
+        .pipe(uncss({
+            html: [FILES.watchable],
+            ignore: [
+                /\.js-/
+            ]
+        }))
+        .pipe(cleanCSS({compatibility: 'ie8'}))
+        .pipe(filterCSS.restore)
+        .pipe(gulp.dest(DIR.build + "/assets"));
+});
+
+
+/********
+ *
+ * Script and style injection task
+ */
+
+gulp.task('build-inject', ['src-build', 'build-clean', 'build-vendors', 'build-scripts'], function () {
+    var target = gulp.src(FILES.watchable);
+
+    var userFiles = gulp.src([DIR.build + "/assets/scripts.min.js", DIR.build + "/assets/styles.min.css"]);
+    var vendorsFiles = gulp.src(DIR.build + "/assets/vendors.min.js");
+
+    return target.pipe(gulp.dest(DIR.build))
+        .pipe(inject(userFiles, {relative: true, empty: true}))
+        .pipe(inject(vendorsFiles, {relative: true, name: 'bower', empty: true}))
+        .pipe(htmlmin({collapseWhitespace: true, removeComments: true}))
+        .pipe(gulp.dest(DIR.build));
+});
+
+
+/**********************
+ *  _                           _
+ * /!\ DEFAULT PRODUCTION TASK /!\
+ * ¯¯¯                         ¯¯¯
+ *********************/
+
+
+gulp.task('build', ['src-build', 'build-clean', 'build-vendors', 'build-scripts', 'build-inject']);
