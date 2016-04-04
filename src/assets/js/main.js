@@ -1,8 +1,10 @@
 var supports = require('./Utils/Supports');
 
 var scene = require('./Utils/Scene').create();
-var camera = require('./Utils/Camera').create();
-var listener = require('./Utils/Listener').create(camera);
+var cameraUtils = require('./Utils/Camera');
+var camera = cameraUtils.create();
+var listenerUtils = require('./Utils/Listener');
+var listener = listenerUtils.create(camera);
 var rendererUtils = require('./Utils/Renderer');
 var renderer = rendererUtils.create();
 
@@ -27,7 +29,10 @@ var UI = require('./UI');
 
 console.log(scene);
 
-var toggleFullScreenBtn = document.getElementById('toggleFullScreen');
+/**
+ * FullScreen Toggle Button
+ */
+var toggleFullScreenBtn = document.getElementById('toggleFullScreenBtn');
 toggleFullScreenBtn.addEventListener('click', toggleFullScreen);
 function toggleFullScreen (){
     var domElem = renderer.domElement;
@@ -40,6 +45,18 @@ function toggleFullScreen (){
     }
 }
 
+/**
+ * Audio Toggle Button
+ */
+var toggleAudioBtn = document.getElementById('toggleAudioBtn');
+toggleAudioBtn.addEventListener('click', toggleAudio);
+function toggleAudio(){
+    listenerUtils.toggle();
+}
+
+/**
+ * Render
+ */
 var render = function() {
     requestAnimationFrame(render);
 
@@ -65,3 +82,13 @@ function onMouseMove( event ) {
 window.addEventListener( 'mousemove', onMouseMove, false );
 
 render();
+
+/**
+ * On Window Resize
+ */
+window.addEventListener( 'resize', onWindowResize, false );
+function onWindowResize() {
+    cameraUtils.handleResize();
+    rendererUtils.handleResize();
+    //controls.handleResize();
+}

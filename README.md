@@ -1,9 +1,7 @@
 # LUMA VR Experiment
-
-Made by [@Thomas_Lecoeur](https://twitter.com/Thomas_Lecoeur), [@quentin_neyraud](https://twitter.com/quentin_neyraud), [@remsclippa](https://twitter.com/remsclippa) & [@tristanpicut](https://twitter.com/tristanpicut) at DΣIS.
 ---
 
-Starter made to experiment some great stuff in css, javascript and html !
+VR experiment made by [@Thomas_Lecoeur](https://twitter.com/Thomas_Lecoeur), [@quentin_neyraud](https://twitter.com/quentin_neyraud), [@remsclippa](https://twitter.com/remsclippa) & [@tristanpicut](https://twitter.com/tristanpicut) at DΣIS.
 
 ## Getting started
 ---
