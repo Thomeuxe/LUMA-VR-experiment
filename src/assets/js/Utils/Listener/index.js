@@ -1,9 +1,10 @@
 var Listener = {
-  active: true,
+  active: false,
 
   create: function(camera) {
     this.listener = new THREE.AudioListener();
     camera.add( this.listener );
+    this.listener.setMasterVolume(this.active ? 1 : 0);
     return this.listener
   },
 
