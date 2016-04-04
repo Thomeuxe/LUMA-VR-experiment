@@ -11,6 +11,19 @@ var UI = require('./UI');
 
 console.log(scene);
 
+var toggleFullScreenBtn = document.getElementById('toggleFullScreen');
+toggleFullScreenBtn.addEventListener('click', toggleFullScreen);
+function toggleFullScreen (){
+    var domElem = renderer.domElement;
+    if (domElem.requestFullscreen) {
+        domElem.requestFullscreen();
+    } else if (domElem.mozRequestFullScreen) {
+        domElem.mozRequestFullScreen();
+    } else if (domElem.webkitRequestFullscreen) {
+        domElem.webkitRequestFullscreen();
+    }
+}
+
 var render = function() {
     requestAnimationFrame(render);
 
