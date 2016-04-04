@@ -5,8 +5,11 @@ var renderer = require('./Utils/Renderer').create();
 
 var terrain = require('./Terrain').create(scene, camera, renderer);
 var sounds = require('./Sounds').create(listener);
+var monkey = require('./Models').test(scene);
 var controls = require('./Controls').create(camera);
 var UI = require('./UI');
+
+console.log(scene);
 
 var render = function() {
     requestAnimationFrame(render);

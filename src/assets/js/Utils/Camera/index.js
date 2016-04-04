@@ -1,6 +1,9 @@
 var Camera = {
     create: function() {
-        return new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
+        this.camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
+        this.camera.position.z = 10;
+
+        return this.camera
     }
 };
 
