@@ -1,7 +1,9 @@
 var scene = require('./Utils/Scene').create();
 var camera = require('./Utils/Camera').create();
 var listener = require('./Utils/Listener').create(camera);
-var renderer = require('./Utils/Renderer').create();
+var rendererUtils = require('./Utils/Renderer');
+var renderer = rendererUtils.create();
+var cbEffect = rendererUtils.setCardboardEffect();
 
 var terrain = require('./Terrain').create(scene, camera, renderer);
 var sounds = require('./Sounds').create(listener);
@@ -29,9 +31,9 @@ var render = function() {
     requestAnimationFrame(render);
 
     controls.update();
-    mouseControls.update();
+    //mouseControls.update();
 
-    renderer.render(scene, camera);
+    cbEffect.render(scene, camera);
 };
 
 render();
