@@ -14,12 +14,6 @@ var Terrain = {
         // this.controls = new THREE.TrackballControls(camera);
         document.getElementById('webgl1').appendChild(renderer.domElement);
         this.render();
-    },
-
-    render: function() {
-        this.controls.update();
-        requestAnimationFrame(this.render);
-        renderer.render(scene, camera);
     }
 };
-exports.module = Terrain;
+module.exports = Terrain;
