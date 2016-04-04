@@ -16,6 +16,7 @@ var clean = require('gulp-clean');
 var htmlmin = require('gulp-htmlmin');
 var argv = require('yargs').argv;
 var browserify = require('gulp-browserify');
+var rename = require('gulp-rename');
 
 
 /**********************
@@ -111,7 +112,7 @@ gulp.task('imagemin', function () {
  * Script and style injection task
  */
 
-gulp.task('inject', ['sass'], function () {
+gulp.task('inject', ['browserify', 'sass'], function () {
     var target = gulp.src(FILES.inject);
 
     var bowerFiles = gulp.src(mainBowerFiles({
@@ -122,19 +123,22 @@ gulp.task('inject', ['sass'], function () {
         }
     }), {read: false});
 
-    var sources = gulp.src([FILES.js + "", FILES.css + ""], {read: false});
+    var sources = gulp.src([DIR.js + '/main.browserify.js', FILES.css + ""], {read: false});
 
     return target.pipe(inject(sources, {relative: true}))
         .pipe(inject(bowerFiles, {relative: true, name: 'bower'}))
         .pipe(gulp.dest(DIR.src));
 });
 
-gulp.task('scripts', function() {
-    gulp.src('src/assets/js/main.js')
+gulp.task('browserify', function() {
+    return gulp.src(DIR.js + '/main.js')
         .pipe(browserify({
             insertGlobals : true
         }))
-        .pipe(gulp.dest('./build/js'))
+        .pipe(rename({
+            suffix: ".browserify",
+        }))
+        .pipe(gulp.dest(DIR.js));
 });
 
 
@@ -144,7 +148,7 @@ gulp.task('scripts', function() {
  * ¯¯¯              ¯¯¯
  *********************/
 
-gulp.task('src-build', ['imagemin', 'sass', 'inject']);
+gulp.task('src-build', ['imagemin', 'sass', 'browserify', 'inject']);
 
 gulp.task('default', ['serve']);
 
@@ -174,6 +178,8 @@ gulp.task('build-vendors', ['src-build', 'build-clean'], function () {
 
     var filterJS = gulpFilter('**/*.js', {restore: true});
     var filterCSS = gulpFilter('**/*.css', {restore: true});
+
+    //TODO: add browserigy task
 
     return gulp.src(mainBowerFiles({
             paths: {
