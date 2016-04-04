@@ -70,6 +70,7 @@ gulp.task('serve', ['imagemin', 'sass', 'inject'], function () {
         });
 
         gulp.watch(FILES.sass, ['sass']);
+        gulp.watch(FILES.js, ['browserify', 'inject']);
         gulp.watch([FILES.watchable, FILES.js, FILES.watchable]).on('change', browserSync.reload);
     }
 });
