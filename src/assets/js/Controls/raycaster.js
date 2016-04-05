@@ -1,29 +1,41 @@
 Raycaster = {
-    raycaster: null,
+    targetRaycaster: null,
     center: null,
+
+    collisionRaycaster: null,
+    collisionVector: null,
 
     scene: null,
     camera: null,
+    UI: null,
 
     intersected: null,
     intersections: [],
+    terrain: null,
 
-    create: function(scene, camera, UI) {
-        this.raycaster = new THREE.Raycaster();
+    create: function(scene, camera, UI, terrain) {
+        this.targetRaycaster = new THREE.Raycaster();
         this.center = new THREE.Vector2(0, 0);
+
+        this.collisionRaycaster = new THREE.Raycaster();
+        this.collisionVector = new THREE.Vector3(0, -1, 0);
 
         this.scene = scene;
         this.camera = camera;
         this.UI = UI;
+        this.terrain = terrain;
 
         return this;
     },
 
     update: function() {
-        this.raycaster.setFromCamera(this.center, this.camera);
+        this.targetRaycaster.setFromCamera(this.center, this.camera);
+        this.collisionRaycaster.set(this.camera.position, this.collisionVector);
 
         // calculate objects intersecting the picking ray
-        var intersects = this.raycaster.intersectObjects(this.scene.children, true);
+        var intersects = this.targetRaycaster.intersectObjects(this.scene.children, true);
+
+        var collisions = this.collisionRaycaster.intersectObject(this.terrain);
 
         var i;
 
@@ -42,6 +54,14 @@ Raycaster = {
             } else {
                 this.UI.closeInfoPanel(this.camera);
             }
+        }
+
+        if (collisions.length > 0 && collisions[0].distance < 60) {
+            this.camera.position.set(
+                this.camera.position.x,
+                this.camera.position.y + 100 - collisions[0].distance,
+                this.camera.position.z
+            );
         }
     }
 };

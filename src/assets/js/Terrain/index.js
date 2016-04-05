@@ -28,6 +28,8 @@ var Terrain = {
         scene.add( mesh );
 
         //this.createSkyBox(scene);
+
+        return mesh;
     },
 
     generateHeight: function(width, height) {

@@ -39,7 +39,7 @@ if(supports.isMobile()) {
 var UI = require('./UI');
 UI.createTarget(camera);
 
-var raycaster = require('./Controls/raycaster.js').create(scene, camera, UI);
+var raycaster = require('./Controls/raycaster.js').create(scene, camera, UI, terrain);
 
 var clock = new THREE.Clock();
 
