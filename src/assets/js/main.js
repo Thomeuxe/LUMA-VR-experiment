@@ -36,6 +36,7 @@ if(supports.isMobile()) {
 var raycaster = require('./Controls/raycaster.js').create(scene, camera);
 
 var UI = require('./UI');
+UI.createTarget(camera);
 
 console.log(scene);
 
