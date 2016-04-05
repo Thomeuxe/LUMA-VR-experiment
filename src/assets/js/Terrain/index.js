@@ -21,11 +21,13 @@ var Terrain = {
 
         mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { map: texture } ) );
         scene.add( mesh );
+
+        this.createSkyBox(scene, camera);
     },
 
     generateHeight: function(width, height) {
         var size = width * height, data = new Uint8Array( size ),
-            perlin = new ImprovedNoise(), quality = 1, z = Math.random() * 100;
+            perlin = new ImprovedNoise(), quality = 1, z = Math.random() * 5;
 
         for ( var j = 0; j < 4; j ++ ) {
 
@@ -106,6 +108,39 @@ var Terrain = {
         context.putImageData( image, 0, 0 );
 
         return canvasScaled;
+    },
+
+    createSkyBox: function(scene, camera) {
+        var urlPrefix	= "./assets/js/Terrain/";
+
+        var materials = [
+            urlPrefix + "posx.jpg",
+            urlPrefix + "negx.jpg",
+            urlPrefix + "posy.jpg",
+            urlPrefix + "negy.jpg",
+            urlPrefix + "posz.jpg",
+            urlPrefix + "negz.jpg"
+        ];
+
+        var skyGeometry = new THREE.CubeGeometry( 500, 500, 500 );
+
+        var materialArray = [];
+        for (var i = 0; i < 6; i++)
+            materialArray.push( new THREE.MeshBasicMaterial({
+                map: THREE.ImageUtils.loadTexture( urlPrefix + 'fond-marin.jpg' ),
+                side: THREE.BackSide
+            }));
+        var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
+        var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+        this.skybox = skybox;
+        skyBox.position.y = camera.position.y;
+        scene.add( skyBox );
+    },
+
+    getSkybox: function() {
+        return this.skybox;
     }
+
+
 };
 module.exports = Terrain;
