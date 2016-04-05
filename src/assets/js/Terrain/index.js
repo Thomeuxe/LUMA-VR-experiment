@@ -1,18 +1,17 @@
 var Terrain = {
 
     create: function(scene, camera, renderer) {
-        var data = this.generateHeight(256, 256);
-        camera.position.y = data[ 128 + 128 * 256 ] * 10 + 500;
+        var test = 125;
+        var data = this.generateHeight(test, test);
+        camera.position.y = data[ 128 + 128 * test ] * 10 + 500;
 
-        var geometry = new THREE.PlaneBufferGeometry( 7500, 7500, 256 - 1, 256 - 1 );
+        var geometry = new THREE.PlaneBufferGeometry( 7500, 7500, test - 1, test - 1 );
         geometry.rotateX( - Math.PI / 2 );
 
         var vertices = geometry.attributes.position.array;
 
         for ( var i = 0, j = 0, l = vertices.length; i < l; i ++, j += 3 ) {
-
             vertices[ j + 1 ] = data[ i ] * 10;
-
         }
 
         var texture = new THREE.CanvasTexture( this.generateTexture( data, 256, 256 ) );
@@ -22,7 +21,7 @@ var Terrain = {
         mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { map: texture } ) );
         scene.add( mesh );
 
-        this.createSkyBox(scene, camera);
+        //this.createSkyBox(scene, camera);
     },
 
     generateHeight: function(width, height) {
@@ -112,17 +111,7 @@ var Terrain = {
 
     createSkyBox: function(scene, camera) {
         var urlPrefix	= "./assets/js/Terrain/";
-
-        var materials = [
-            urlPrefix + "posx.jpg",
-            urlPrefix + "negx.jpg",
-            urlPrefix + "posy.jpg",
-            urlPrefix + "negy.jpg",
-            urlPrefix + "posz.jpg",
-            urlPrefix + "negz.jpg"
-        ];
-
-        var skyGeometry = new THREE.CubeGeometry( 500, 500, 500 );
+        var skyGeometry = new THREE.CubeGeometry( 1000, 1000, 1000 );
 
         var materialArray = [];
         for (var i = 0; i < 6; i++)
@@ -132,13 +121,15 @@ var Terrain = {
             }));
         var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
         var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
-        this.skybox = skybox;
-        skyBox.position.y = camera.position.y;
+        this.skyBox = skyBox;
+        this.updateSkyboxPosition();
         scene.add( skyBox );
     },
 
-    getSkybox: function() {
-        return this.skybox;
+    updateSkyboxPosition: function() {
+        this.skyBox.position.y = camera.position.y;
+        this.skyBox.position.x = camera.position.x;
+        this.skyBox.position.z = camera.position.z;
     }
 
 
