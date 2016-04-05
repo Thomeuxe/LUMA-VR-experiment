@@ -12,6 +12,10 @@ Fish.setScene = function (scene) {
   Fish.scene = scene;
 };
 
+Fish.setListener = function (listener) {
+  Fish.listener = listener;
+};
+
 Fish.update = function (delta) {
   Fish.instances.forEach(function (instance) {
     if (instance.mixer) {
@@ -43,6 +47,7 @@ Fish.prototype.init = function (geometry, materials) {
   this.mesh.targetable = true;
 
   this.initAnimation(geometry);
+  this.initAudio(Fish.listener);
 
   Fish.instances.push(this);
 };
@@ -52,6 +57,16 @@ Fish.prototype.initAnimation = function (geometry) {
 
   this.action = this.mixer.clipAction( geometry.animations[ 0 ] );
   this.action.play();
+};
+
+Fish.prototype.initAudio = function (listener) {
+  this.audio = new THREE.PositionalAudio( listener );
+  this.audio.load( 'assets/sounds/fish_noise.mp3' );
+  this.audio.setRefDistance( 4 );
+  this.audio.setLoop(true);
+  this.audio.autoplay = true;
+  this.audio.setVolume(3);
+  this.mesh.add( this.audio );
 };
 
 module.exports = Fish;
