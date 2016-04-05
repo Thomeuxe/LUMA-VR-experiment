@@ -13,20 +13,28 @@ var Controls = {
     },
 
     initTouchMovements: function(camera) {
+        /*controls = new THREE.VRControls( camera );
+        controls.movementSpeed = 150;
+        controls.lookSpeed = 0.1;
+        return controls;*/
+
         window.addEventListener('touchstart', function() {
             this.goForward(camera);
         }.bind(this), false);
+
         window.addEventListener('touchend', function() {
             this.stop(camera);
         }.bind(this), false);
     },
 
-    goForward: function(object) {
-        console.log("goForward", object);
+    goForward: function(camera) {
+        console.log("yo", camera);
+        TweenMax.to(camera, 1, {acceleration: -10, ease: Quad.easeIn});
     },
 
-    stop: function(object) {
-        console.log("stop");
+    stop: function(camera) {
+        console.log("stop", camera);
+        TweenMax.to(camera, 2, {acceleration: 0, ease: Quad.easeOut});
     }
 };
 

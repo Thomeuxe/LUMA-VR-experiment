@@ -21,6 +21,7 @@
     "gsap": "^1.18.2",
     "DeviceOrientationControls": "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/js/controls/DeviceOrientationControls.js",
     "OrbitControls": "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js",
+    "VRControls": "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/js/controls/VRControls.js",
     "CardboardEffect": "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/js/effects/CardboardEffect.js",
     "ImprovedNoise": "http://mrdoob.github.io/three.js/examples/js/ImprovedNoise.js"
   }
