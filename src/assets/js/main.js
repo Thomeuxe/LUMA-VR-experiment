@@ -15,6 +15,8 @@ var Fish = require('./Models/fish.js');
 Fish.setScene(scene);
 Fish.setListener(listener);
 
+var particles = require('./Models/particles.js').create(camera);
+
 var lights = require('./Models/lights.js');
 
 lights.addAsChild(camera, scene);

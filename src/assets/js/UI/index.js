@@ -15,8 +15,11 @@ var UI = {
             scene.add(this.infoPanel);
         }
 
+        var vector = new THREE.Vector3();
+        vector.setFromMatrixPosition( parent.matrixWorld );
+
         this.infoPanel.lookAt(camera.position);
-        this.infoPanel.position.set(parent.position.x, parent.position.y, parent.position.z);
+        this.infoPanel.position.set(vector.x, vector.y, vector.z);
 
         this.infoPanel.visible = true;
     },
