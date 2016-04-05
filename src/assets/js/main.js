@@ -77,7 +77,9 @@ function toggleFullScreen (){
         }
     }
 
-    screen.orientation.lock("landscape-primary");
+    if(supports.isMobile()) {
+        screen.orientation.lock("landscape-primary");
+    }
 }
 
 /**
