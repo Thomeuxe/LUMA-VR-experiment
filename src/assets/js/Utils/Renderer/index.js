@@ -5,7 +5,7 @@ var Renderer = {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio ? window.devicePixelRatio : 1, 2));
 
-        document.body.appendChild(this.renderer.domElement);
+        document.getElementById('wrapper').appendChild(this.renderer.domElement);
 
         return this.renderer;
     },

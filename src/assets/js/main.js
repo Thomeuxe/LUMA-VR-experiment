@@ -57,16 +57,26 @@ var fish2 = new Fish(scene);
 var toggleFullScreenBtn = document.getElementById('toggleFullScreenBtn');
 toggleFullScreenBtn.addEventListener('click', toggleFullScreen);
 function toggleFullScreen (){
-    var domElem = renderer.domElement;
+    var domElem = document.getElementById('wrapper');
 
-    if (domElem.requestFullscreen) {
-        domElem.requestFullscreen();
-    } else if (domElem.mozRequestFullScreen) {
-        domElem.mozRequestFullScreen();
-    } else if (domElem.webkitRequestFullscreen) {
-        domElem.webkitRequestFullscreen();
+    if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement) {
+        if (domElem.requestFullscreen) {
+            domElem.requestFullscreen();
+        } else if (domElem.mozRequestFullScreen) {
+            domElem.mozRequestFullScreen();
+        } else if (domElem.webkitRequestFullscreen) {
+            domElem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+        }
+    } else {
+        if (document.cancelFullScreen) {
+            document.cancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        }
     }
-    
+
     screen.orientation.lock("landscape-primary");
 }
 
