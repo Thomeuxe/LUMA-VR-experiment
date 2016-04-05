@@ -2,16 +2,24 @@ var Sounds = {
   create: function(listener) {
     this.listener = listener;
 
-    this.initAmbientSound();
+    this.initAtmosphere();
+    this.initHeartBeats();
 
     return this;
   },
-  initAmbientSound: function () {
-    this.ambient = new THREE.Audio( this.listener );
-    this.ambient.load( 'assets/sounds/ninjatracks-oneforall.mp3' );
-    this.ambient.autoplay = true;
-    this.ambient.setLoop(true);
-    this.ambient.setVolume(0.2);
+  initAtmosphere: function () {
+    this.atmosphere = new THREE.Audio( this.listener );
+    this.atmosphere.load( 'assets/sounds/atmosphere.mp3' );
+    this.atmosphere.autoplay = true;
+    this.atmosphere.setLoop(true);
+    this.atmosphere.setVolume(0.5);
+  },
+  initHeartBeats: function () {
+    this.heartBeats = new THREE.Audio( this.listener );
+    this.heartBeats.load( 'assets/sounds/heart_beats.mp3' );
+    this.heartBeats.autoplay = true;
+    this.heartBeats.setLoop(true);
+    this.heartBeats.setVolume(2);
   }
 };
 

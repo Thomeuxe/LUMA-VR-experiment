@@ -23,8 +23,13 @@ var Terrain = {
         texture.wrapS = THREE.ClampToEdgeWrapping;
         texture.wrapT = THREE.ClampToEdgeWrapping;
 
-        mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { map: texture } ) );
-        //mesh = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { color: 0x006994, shininess: 0, shading: THREE.FlatShading } ) );
+        //mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { map: texture } ) );
+        var texture = new THREE.TextureLoader().load( './assets/img/topography.jpg' );
+        texture.mapping = THREE.SphericalReflectionMapping;
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 4, 4 );
+        mesh = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { color: 0x006994, shininess: 0, map: texture } ) );
         scene.add( mesh );
 
         //this.createSkyBox(scene);

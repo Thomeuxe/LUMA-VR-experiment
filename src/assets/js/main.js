@@ -13,12 +13,14 @@ var terrain = require('./Terrain').create(scene, camera, renderer);
 var sounds = require('./Sounds').create(listener);
 var Fish = require('./Models/fish.js');
 Fish.setScene(scene);
+Fish.setListener(listener);
 
 var particles = require('./Models/particles.js').create(camera);
 
 var lights = require('./Models/lights.js');
-
 lights.addAsChild(camera, scene);
+
+var gauge = require('./UI/gauge.js').create(camera);
 
 var controls = require('./Controls');
 var touchControls;
@@ -49,8 +51,8 @@ console.log(scene);
  * Create model instances
  */
 
-var fish = new Fish(scene);
-var fish2 = new Fish(scene);
+var fish = new Fish();
+var fish2 = new Fish();
 
 
 /**
@@ -109,6 +111,7 @@ var render = function() {
     fRenderer.render(scene, camera);
 
     Fish.update(delta);
+    gauge.update();
 };
 
 render();
