@@ -1,5 +1,5 @@
 var Listener = {
-  active: false,
+  active: true,
 
   create: function(camera) {
     this.listener = new THREE.AudioListener();
