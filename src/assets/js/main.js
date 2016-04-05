@@ -18,8 +18,9 @@ Fish.setListener(listener);
 var particles = require('./Models/particles.js').create(camera);
 
 var lights = require('./Models/lights.js');
-
 lights.addAsChild(camera, scene);
+
+var gauge = require('./UI/gauge.js').create(camera);
 
 var controls = require('./Controls');
 var touchControls;
@@ -110,6 +111,7 @@ var render = function() {
     fRenderer.render(scene, camera);
 
     Fish.update(delta);
+    gauge.update();
 };
 
 render();
