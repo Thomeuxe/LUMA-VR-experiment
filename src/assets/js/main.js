@@ -18,13 +18,14 @@ Fish.setListener(listener);
 var particles = require('./Models/particles.js').create(camera);
 
 var lights = require('./Models/lights.js');
-
 lights.addAsChild(camera, scene);
 
 var Lantern = require('./Models/lantern.js');
 Lantern.attachAsChild(scene);
 
 //var heroLantern = new Lantern();
+
+var gauge = require('./UI/gauge.js').create(camera);
 
 var controls = require('./Controls');
 var touchControls;
@@ -45,7 +46,7 @@ if(supports.isMobile()) {
 var UI = require('./UI');
 UI.createTarget(camera);
 
-var raycaster = require('./Controls/raycaster.js').create(scene, camera, UI);
+var raycaster = require('./Controls/raycaster.js').create(scene, camera, UI, terrain);
 
 var clock = new THREE.Clock();
 
@@ -115,6 +116,7 @@ var render = function() {
     fRenderer.render(scene, camera);
 
     Fish.update(delta);
+    gauge.update();
 };
 
 render();
