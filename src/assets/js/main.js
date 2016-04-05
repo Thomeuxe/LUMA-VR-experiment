@@ -46,6 +46,7 @@ var toggleFullScreenBtn = document.getElementById('toggleFullScreenBtn');
 toggleFullScreenBtn.addEventListener('click', toggleFullScreen);
 function toggleFullScreen (){
     var domElem = renderer.domElement;
+
     if (domElem.requestFullscreen) {
         domElem.requestFullscreen();
     } else if (domElem.mozRequestFullScreen) {
@@ -53,6 +54,8 @@ function toggleFullScreen (){
     } else if (domElem.webkitRequestFullscreen) {
         domElem.webkitRequestFullscreen();
     }
+    
+    screen.orientation.lock("landscape-primary");
 }
 
 /**
