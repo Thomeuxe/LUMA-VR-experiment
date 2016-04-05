@@ -1,0 +1,20 @@
+.btn {
+  display: inline-block;
+  cursor: pointer;
+  background: rgba(0,0,0,0.4);
+  border: 2px solid #fff;
+  padding: 7px 14px;
+  color: #fff;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin: 10px;
+  transition: all .3s ease-out;
+
+  &:hover {
+    background: rgba(0,0,0,0.8);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
