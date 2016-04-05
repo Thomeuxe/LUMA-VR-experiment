@@ -54,7 +54,7 @@ var fish2 = new Fish(scene);
 /**
  * FullScreen Toggle Button
  */
-var toggleFullScreenBtn = document.getElementById('toggleFullScreenBtn');
+var toggleFullScreenBtn = document.getElementById('playBtn');
 toggleFullScreenBtn.addEventListener('click', toggleFullScreen);
 function toggleFullScreen (){
     var domElem = document.getElementById('wrapper');
@@ -77,7 +77,9 @@ function toggleFullScreen (){
         }
     }
 
-    screen.orientation.lock("landscape-primary");
+    if(supports.isMobile()) {
+        screen.orientation.lock("landscape-primary");
+    }
 }
 
 /**
