@@ -1,32 +1,38 @@
 var Terrain = {
 
     create: function(scene, camera, renderer) {
-        var data = this.generateHeight(256, 256);
-        camera.position.y = data[ 128 + 128 * 256 ] * 10 + 500;
 
-        var geometry = new THREE.PlaneBufferGeometry( 7500, 7500, 256 - 1, 256 - 1 );
+        var width = 128;
+        var height = 128;
+        var midWidth = width / 2;
+        var midHeight = height / 2;
+
+        var data = this.generateHeight(width, height);
+        camera.position.y = data[ midWidth + midHeight * midWidth ] * 10 + 500;
+
+        var geometry = new THREE.PlaneBufferGeometry( 3500, 3500, width - 1, height - 1 );
         geometry.rotateX( - Math.PI / 2 );
 
         var vertices = geometry.attributes.position.array;
 
         for ( var i = 0, j = 0, l = vertices.length; i < l; i ++, j += 3 ) {
-
             vertices[ j + 1 ] = data[ i ] * 10;
-
         }
 
-        var texture = new THREE.CanvasTexture( this.generateTexture( data, 256, 256 ) );
+        var texture = new THREE.CanvasTexture( this.generateTexture( data, width, height ) );
         texture.wrapS = THREE.ClampToEdgeWrapping;
         texture.wrapT = THREE.ClampToEdgeWrapping;
 
         mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { map: texture } ) );
         //mesh = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { color: 0x006994, shininess: 0, shading: THREE.FlatShading } ) );
         scene.add( mesh );
+
+        //this.createSkyBox(scene);
     },
 
     generateHeight: function(width, height) {
         var size = width * height, data = new Uint8Array( size ),
-            perlin = new ImprovedNoise(), quality = 1, z = Math.random() * 100;
+            perlin = new ImprovedNoise(), quality = 1, z = Math.random() * 5;
 
         for ( var j = 0; j < 4; j ++ ) {
 
@@ -107,6 +113,31 @@ var Terrain = {
         context.putImageData( image, 0, 0 );
 
         return canvasScaled;
+    },
+
+    createSkyBox: function(scene) {
+        var urlPrefix	= "./assets/js/Terrain/";
+
+        var materials = [
+            urlPrefix + "posx.jpg",
+            urlPrefix + "negx.jpg",
+            urlPrefix + "posy.jpg",
+            urlPrefix + "negy.jpg",
+            urlPrefix + "posz.jpg",
+            urlPrefix + "negz.jpg"
+        ];
+
+        var skyGeometry = new THREE.CubeGeometry( 50, 50, 50 );
+
+        var materialArray = [];
+        for (var i = 0; i < 6; i++)
+            materialArray.push( new THREE.MeshBasicMaterial({
+                map: THREE.ImageUtils.loadTexture( materials[i] ),
+                side: THREE.BackSide
+            }));
+        var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
+        var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+        scene.add( skyBox );
     }
 };
 module.exports = Terrain;

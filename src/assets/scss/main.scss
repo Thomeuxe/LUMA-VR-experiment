@@ -1,3 +1,9 @@
+* {
+  box-sizing: border-box;
+}
+
+@import "components/_buttons";
+
 body {
   padding: 0;
   margin: 0;
@@ -14,14 +20,23 @@ canvas {
   height: 100%;
 }
 
-@media (max-width: 759px) {
-  #toggleFullScreenBtn {
-    position: absolute;
+.options {
+  position: absolute;
+  right: 0;
+}
+
+#playBtn {
+  display: inline-block;
+  position: absolute;
+  text-transform: uppercase;
+
+  @media (max-width: 759px) {
     font-size: 40px;
-    line-height: 120px;
-    width: 50vw;
+    line-height: 90px;
+    padding: 0 60px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
   }
 }
+

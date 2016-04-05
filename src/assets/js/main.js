@@ -11,7 +11,8 @@ var renderer = rendererUtils.create();
 
 var terrain = require('./Terrain').create(scene, camera, renderer);
 var sounds = require('./Sounds').create(listener);
-var monkey = require('./Models').test(scene);
+var Fish = require('./Models/fish.js');
+Fish.setScene(scene);
 
 var particles = require('./Models/particles.js').create(camera);
 
@@ -35,30 +36,52 @@ if(supports.isMobile()) {
     fRenderer = renderer;
 }
 
-var raycaster = require('./Controls/raycaster.js').create(scene, camera);
-
 var UI = require('./UI');
 UI.createTarget(camera);
+
+var raycaster = require('./Controls/raycaster.js').create(scene, camera, UI);
+
+var clock = new THREE.Clock();
 
 console.log(scene);
 
 /**
+ * Create model instances
+ */
+
+var fish = new Fish(scene);
+var fish2 = new Fish(scene);
+
+
+/**
  * FullScreen Toggle Button
  */
-var toggleFullScreenBtn = document.getElementById('toggleFullScreenBtn');
+var toggleFullScreenBtn = document.getElementById('playBtn');
 toggleFullScreenBtn.addEventListener('click', toggleFullScreen);
 function toggleFullScreen (){
-    var domElem = renderer.domElement;
+    var domElem = document.getElementById('wrapper');
 
-    if (domElem.requestFullscreen) {
-        domElem.requestFullscreen();
-    } else if (domElem.mozRequestFullScreen) {
-        domElem.mozRequestFullScreen();
-    } else if (domElem.webkitRequestFullscreen) {
-        domElem.webkitRequestFullscreen();
+    if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement) {
+        if (domElem.requestFullscreen) {
+            domElem.requestFullscreen();
+        } else if (domElem.mozRequestFullScreen) {
+            domElem.mozRequestFullScreen();
+        } else if (domElem.webkitRequestFullscreen) {
+            domElem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+        }
+    } else {
+        if (document.cancelFullScreen) {
+            document.cancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        }
     }
-    
-    screen.orientation.lock("landscape-primary");
+
+    if(supports.isMobile()) {
+        screen.orientation.lock("landscape-primary");
+    }
 }
 
 /**
@@ -74,6 +97,8 @@ function toggleAudio(){
  * Render
  */
 var render = function() {
+    var delta = 0.75 * clock.getDelta();
+
     requestAnimationFrame(render);
 
     rotationControls.update();
@@ -82,6 +107,8 @@ var render = function() {
     cameraUtils.render();
 
     fRenderer.render(scene, camera);
+
+    Fish.update(delta);
 };
 
 render();
