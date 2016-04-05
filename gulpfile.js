@@ -39,7 +39,7 @@ var FILES = {
     watchable: DIR.src + "/**/*.{html,php}",
     inject: DIR.src + "/**/*.{html,php}",
     css: DIR.css + "/*.css",
-    sass: DIR.sass + "/*.scss",
+    sass: DIR.sass + "/**/*.scss",
     js: DIR.js + "/**/*.js",
     images: DIR.images + "/**/*",
     svg: DIR.src + "/img/**/*.svg",
