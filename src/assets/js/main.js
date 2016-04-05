@@ -21,6 +21,11 @@ var lights = require('./Models/lights.js');
 
 lights.addAsChild(camera, scene);
 
+var Lantern = require('./Models/lantern.js');
+Lantern.attachAsChild(scene);
+
+//var heroLantern = new Lantern();
+
 var controls = require('./Controls');
 var touchControls;
 var rotationControls;
@@ -102,7 +107,7 @@ var render = function() {
 
     requestAnimationFrame(render);
 
-    rotationControls.update();
+    //rotationControls.update();
     //touchControls.update();
     raycaster.update();
     cameraUtils.render();
