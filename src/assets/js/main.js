@@ -17,14 +17,17 @@ var lights = require('./Models/lights.js');
 
 lights.addAsChild(camera, scene);
 
-var controls;
+var controls = require('./Controls');
+var rotationControls;
 var fRenderer;
 
 if(supports.isMobile()) {
-    controls = require('./Controls').create(camera);
+    rotationControls = controls.create(camera);
+    controls.initTouchMovements(camera);
+
     fRenderer = rendererUtils.setCardboardEffect();
 } else {
-    controls = require('./Controls').createMouse(camera, renderer);
+    rotationControls = controls.createMouse(camera, renderer);
     fRenderer = renderer;
 }
 
@@ -65,7 +68,7 @@ function toggleAudio(){
 var render = function() {
     requestAnimationFrame(render);
 
-    controls.update();
+    rotationControls.update();
     raycaster.update();
 
     fRenderer.render(scene, camera);
