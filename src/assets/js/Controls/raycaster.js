@@ -59,7 +59,7 @@ Raycaster = {
         if (collisions.length > 0 && collisions[0].distance < 60) {
             this.camera.position.set(
                 this.camera.position.x,
-                this.camera.position.y + 100 - collisions[0].distance,
+                this.camera.position.y + 60 - collisions[0].distance,
                 this.camera.position.z
             );
         }
