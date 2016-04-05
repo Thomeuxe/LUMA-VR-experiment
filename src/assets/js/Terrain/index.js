@@ -20,6 +20,7 @@ var Terrain = {
         texture.wrapT = THREE.ClampToEdgeWrapping;
 
         mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { map: texture } ) );
+        //mesh = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { color: 0x006994, shininess: 0, shading: THREE.FlatShading } ) );
         scene.add( mesh );
     },
 

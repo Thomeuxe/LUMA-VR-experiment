@@ -13,6 +13,8 @@ var terrain = require('./Terrain').create(scene, camera, renderer);
 var sounds = require('./Sounds').create(listener);
 var monkey = require('./Models').test(scene);
 
+var particles = require('./Models/particles.js').create(camera);
+
 var lights = require('./Models/lights.js');
 
 lights.addAsChild(camera, scene);
