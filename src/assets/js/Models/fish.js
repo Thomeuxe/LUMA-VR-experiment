@@ -1,12 +1,37 @@
 var Fish = function (infos) {
-  Fish.loader.load( 'assets/js/Models/skinned/knight.json', this.init.bind(this));
+  infos = infos || {};
 
   this.name = infos.name;
+
+  if (!Fish._base) {
+    // Start object loading
+    if (!Fish._loadingBase) {
+      Fish.loader.load('assets/js/Models/skinned/fish.json', Fish._setBase);
+      Fish._loadingBase = true;
+    }
+    // Add current object to wait list
+    Fish._needsInit.push(this);
+  } else {
+    this.init();
+  }
 
   return this;
 };
 
-Fish.loader = new THREE.JSONLoader();
+Fish._base = null;
+Fish._loadingBase = false;
+Fish._needsInit = [];
+
+Fish._setBase = function(object) {
+  Fish._base = object;
+  Fish._loadingBase = false;
+  // Instanciate wait list objects
+  for (var i = 0; i < Fish._needsInit.length; i++) {
+    Fish._needsInit[i].init();
+  }
+};
+
+Fish.loader = new THREE.ObjectLoader();
 Fish.instances = [];
 
 Fish.setScene = function (scene) {
@@ -25,14 +50,9 @@ Fish.update = function (delta) {
   });
 };
 
-
-Fish.prototype.init = function (geometry, materials) {
-  materials.forEach( function (material) {
-    material.skinning = true;
-  } );
-
-  this.mesh = new THREE.SkinnedMesh( geometry, new THREE.MultiMaterial( materials ) );
-  //this.mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshBasicMaterial({color: 0x00ff00}));
+Fish.prototype.init = function () {
+  this.mesh = Fish._base.clone();
+  this.mesh.animations = Fish._base.animations; // Clone doesn't clone animation array
 
   this.mesh.position.x = Math.random() * 2000;
   this.mesh.position.y = Math.random() * 2000;
@@ -40,14 +60,11 @@ Fish.prototype.init = function (geometry, materials) {
 
   this.mesh.name = this.name;
 
-  this.mesh.scale.set(10, 10, 10);
-
   Fish.scene.add(this.mesh);
 
-  var geometryColliderRadius = this.mesh.geometry.boundingSphere.radius;
-  var geometryCollider = new THREE.SphereGeometry(geometryColliderRadius, 6, 6);
+  var box = new THREE.Box3().setFromObject(this.mesh);
+  var geometryCollider = new THREE.SphereGeometry(box.getBoundingSphere().radius, 6, 6);
   this.meshCollider = new THREE.Mesh(geometryCollider, new THREE.MeshBasicMaterial({wireframe: true}));
-  this.meshCollider.position.set(0, geometryColliderRadius / 2, 0);
   this.mesh.add(this.meshCollider);
 
   this.mesh.castShadow = true;
@@ -55,16 +72,16 @@ Fish.prototype.init = function (geometry, materials) {
 
   this.meshCollider.targetable = true;
 
-  this.initAnimation(geometry);
+  this.initAnimation(this.mesh);
   this.initAudio(Fish.listener);
 
   Fish.instances.push(this);
 };
 
-Fish.prototype.initAnimation = function (geometry) {
+Fish.prototype.initAnimation = function (object) {
   this.mixer = new THREE.AnimationMixer(this.mesh);
 
-  this.action = this.mixer.clipAction( geometry.animations[ 0 ] );
+  this.action = this.mixer.clipAction(object.animations[0]);
   this.action.play();
 };
 
