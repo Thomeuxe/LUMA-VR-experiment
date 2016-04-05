@@ -13,16 +13,14 @@ var UI = {
     openInfoPanel: function(scene, camera, parent) {
         if(!this.font){
             var loader = new THREE.FontLoader();
-            loader.load( 'assets/fonts/helvetiker_regular.typeface.js', fontLoaded.bind(this));
-            function fontLoaded (font){
+            loader.load( 'assets/fonts/helvetiker_regular.typeface.js', function (font) {
                 this.font = font;
                 this.openInfoPanel();
-            }
+            }.bind(this));
             return;
         }
 
         if(!parent) return;
-
 
         if (!this.infoPanel) {
             this.infoPanel = new THREE.Object3D();
@@ -39,13 +37,12 @@ var UI = {
         vector.setFromMatrixPosition( parent.matrixWorld );
 
         this.infoPanel.lookAt(camera.position);
-        console.log(vector.x);
         this.infoPanel.position.set(vector.x + 30, vector.y, vector.z);
 
         this.infoPanel.visible = true;
     },
 
-    closeInfoPanel: function(camera) {
+    closeInfoPanel: function() {
         if (!this.infoPanel) return;
 
         this.infoPanel.visible = false;

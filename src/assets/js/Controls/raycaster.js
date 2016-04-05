@@ -52,7 +52,7 @@ Raycaster = {
             if (this.intersected) {
                 this.UI.openInfoPanel(this.scene, this.camera, this.intersected.object);
             } else {
-                this.UI.closeInfoPanel(this.camera);
+                this.UI.closeInfoPanel();
             }
         }
 
