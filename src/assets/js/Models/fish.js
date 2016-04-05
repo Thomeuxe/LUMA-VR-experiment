@@ -1,6 +1,7 @@
-var Fish = function () {
-
+var Fish = function (infos) {
   Fish.loader.load( 'assets/js/Models/skinned/knight.json', this.init.bind(this));
+
+  this.name = infos.name;
 
   return this;
 };
@@ -36,6 +37,8 @@ Fish.prototype.init = function (geometry, materials) {
   this.mesh.position.x = Math.random() * 2000;
   this.mesh.position.y = Math.random() * 2000;
   this.mesh.position.z = Math.random() * 2000;
+
+  this.mesh.name = this.name;
 
   this.mesh.scale.set(10, 10, 10);
 

@@ -56,8 +56,8 @@ console.log(scene);
  * Create model instances
  */
 
-var fish = new Fish();
-var fish2 = new Fish();
+var fish = new Fish({name: "Bathocyroe fosteri"});
+var fish2 = new Fish({name: "Chauliode de Sloane"});
 
 
 /**
