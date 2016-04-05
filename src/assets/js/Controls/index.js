@@ -10,6 +10,23 @@ var Controls = {
         controls.enableZoom = true;
 
         return controls;
+    },
+
+    initTouchMovements: function(camera) {
+        window.addEventListener('touchstart', function() {
+            this.goForward(camera);
+        }.bind(this), false);
+        window.addEventListener('touchend', function() {
+            this.stop(camera);
+        }.bind(this), false);
+    },
+
+    goForward: function(object) {
+        console.log("goForward", object);
+    },
+
+    stop: function(object) {
+        console.log("stop");
     }
 };
 

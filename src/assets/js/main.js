@@ -3,6 +3,7 @@ var supports = require('./Utils/Supports');
 var scene = require('./Utils/Scene').create();
 var cameraUtils = require('./Utils/Camera');
 var camera = cameraUtils.create();
+scene.add(camera);
 var listenerUtils = require('./Utils/Listener');
 var listener = listenerUtils.create(camera);
 var rendererUtils = require('./Utils/Renderer');
@@ -12,16 +13,25 @@ var terrain = require('./Terrain').create(scene, camera, renderer);
 var sounds = require('./Sounds').create(listener);
 var monkey = require('./Models').test(scene);
 
-var controls;
+var lights = require('./Models/lights.js');
+
+lights.addAsChild(camera, scene);
+
+var controls = require('./Controls');
+var rotationControls;
 var fRenderer;
 
 if(supports.isMobile()) {
-    controls = require('./Controls').create(camera);
+    rotationControls = controls.create(camera);
+    controls.initTouchMovements(camera);
+
     fRenderer = rendererUtils.setCardboardEffect();
 } else {
-    controls = require('./Controls').createMouse(camera, renderer);
+    rotationControls = controls.createMouse(camera, renderer);
     fRenderer = renderer;
 }
+
+var raycaster = require('./Controls/raycaster.js').create(scene, camera);
 
 var UI = require('./UI');
 
@@ -58,7 +68,8 @@ function toggleAudio(){
 var render = function() {
     requestAnimationFrame(render);
 
-    controls.update();
+    rotationControls.update();
+    raycaster.update();
 
     fRenderer.render(scene, camera);
 };

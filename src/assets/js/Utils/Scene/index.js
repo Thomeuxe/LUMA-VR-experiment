@@ -1,6 +1,12 @@
 var Scene = {
     create: function() {
-        return new THREE.Scene();
+        this.scene = new THREE.Scene();
+        return this.scene;
+    },
+
+    enableHelpers: function() {
+        var axisHelper = new THREE.AxisHelper( 5 );
+        this.scene.add( axisHelper );
     }
 };
 
