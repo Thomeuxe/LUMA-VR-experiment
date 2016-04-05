@@ -11,7 +11,8 @@ var renderer = rendererUtils.create();
 
 var terrain = require('./Terrain').create(scene, camera, renderer);
 var sounds = require('./Sounds').create(listener);
-var monkey = require('./Models').test(scene);
+var Fish = require('./Models/fish.js');
+Fish.setScene(scene);
 
 var lights = require('./Models/lights.js');
 
@@ -35,7 +36,17 @@ var raycaster = require('./Controls/raycaster.js').create(scene, camera);
 
 var UI = require('./UI');
 
+var clock = new THREE.Clock();
+
 console.log(scene);
+
+/**
+ * Create model instances
+ */
+
+var fish = new Fish(scene);
+var fish2 = new Fish(scene);
+
 
 /**
  * FullScreen Toggle Button
@@ -66,12 +77,16 @@ function toggleAudio(){
  * Render
  */
 var render = function() {
+    var delta = 0.75 * clock.getDelta();
+
     requestAnimationFrame(render);
 
     rotationControls.update();
     raycaster.update();
 
     fRenderer.render(scene, camera);
+
+    Fish.update(delta);
 };
 
 render();
