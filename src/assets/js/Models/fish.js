@@ -40,6 +40,8 @@ Fish.prototype.init = function (geometry, materials) {
   this.mesh.castShadow = true;
   this.mesh.receiveShadow = true;
 
+  this.mesh.targetable = true;
+
   this.initAnimation(geometry);
 
   Fish.instances.push(this);
