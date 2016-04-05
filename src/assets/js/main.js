@@ -34,10 +34,10 @@ if(supports.isMobile()) {
     fRenderer = renderer;
 }
 
-var raycaster = require('./Controls/raycaster.js').create(scene, camera);
-
 var UI = require('./UI');
 UI.createTarget(camera);
+
+var raycaster = require('./Controls/raycaster.js').create(scene, camera, UI);
 
 var clock = new THREE.Clock();
 
