@@ -11,19 +11,22 @@ var renderer = rendererUtils.create();
 
 var terrain = require('./Terrain').create(scene, camera, renderer);
 var sounds = require('./Sounds').create(listener);
-var monkey = require('./Models').test(scene);
+var Fish = require('./Models/fish.js');
+Fish.setScene(scene);
 
 var lights = require('./Models/lights.js');
 
 lights.addAsChild(camera, scene);
 
 var controls = require('./Controls');
+var touchControls;
 var rotationControls;
 var fRenderer;
 
+touchControls = controls.initTouchMovements(camera);
+
 if(supports.isMobile()) {
     rotationControls = controls.create(camera);
-    controls.initTouchMovements(camera);
 
     fRenderer = rendererUtils.setCardboardEffect();
 } else {
@@ -34,8 +37,19 @@ if(supports.isMobile()) {
 var raycaster = require('./Controls/raycaster.js').create(scene, camera);
 
 var UI = require('./UI');
+UI.createTarget(camera);
+
+var clock = new THREE.Clock();
 
 console.log(scene);
+
+/**
+ * Create model instances
+ */
+
+var fish = new Fish(scene);
+var fish2 = new Fish(scene);
+
 
 /**
  * FullScreen Toggle Button
@@ -44,6 +58,7 @@ var toggleFullScreenBtn = document.getElementById('toggleFullScreenBtn');
 toggleFullScreenBtn.addEventListener('click', toggleFullScreen);
 function toggleFullScreen (){
     var domElem = renderer.domElement;
+
     if (domElem.requestFullscreen) {
         domElem.requestFullscreen();
     } else if (domElem.mozRequestFullScreen) {
@@ -51,6 +66,8 @@ function toggleFullScreen (){
     } else if (domElem.webkitRequestFullscreen) {
         domElem.webkitRequestFullscreen();
     }
+    
+    screen.orientation.lock("landscape-primary");
 }
 
 /**
@@ -66,12 +83,18 @@ function toggleAudio(){
  * Render
  */
 var render = function() {
+    var delta = 0.75 * clock.getDelta();
+
     requestAnimationFrame(render);
 
     rotationControls.update();
+    //touchControls.update();
     raycaster.update();
+    cameraUtils.render();
 
     fRenderer.render(scene, camera);
+
+    Fish.update(delta);
 };
 
 render();
