@@ -1,5 +1,6 @@
 var Controls = {
     create: function (camera) {
+        this.camera = camera;
         return new THREE.DeviceOrientationControls(camera);
     },
 
@@ -22,14 +23,15 @@ var Controls = {
         }.bind(this), false);
 
         window.addEventListener('mousedown', function () {
-            this.goForward(camera);
+            this.goForward(this.camera);
         }.bind(this), false);
 
         window.addEventListener('mouseup', function () {
-            this.stop(camera);
+            this.stop(this.camera);
         }.bind(this), false);
 
-        TweenMax.set(camera.rotation, {z: 0});
+        this.camera.tmpRotation = 0;
+        TweenMax.set(this.camera, {tmpRotation: 0});
 
         return this;
     },
@@ -48,23 +50,25 @@ var Controls = {
          return controls;*/
 
         window.addEventListener('touchstart', function () {
-            this.goForward(camera);
+            this.goForward(this.camera);
         }.bind(this), false);
 
         window.addEventListener('touchend', function () {
-            this.stop(camera);
+            this.stop(this.camera);
         }.bind(this), false);
     },
 
     goForward: function (camera) {
-        console.log("yo", camera);
-        TweenMax.to(camera, 1, {acceleration: -6, ease: Quad.easeIn});
+        console.log("yo", this.camera);
+        TweenMax.to(this.camera, 1, {acceleration: -6, ease: Quad.easeIn});
     },
 
     stop: function (camera) {
-        console.log("stop", camera);
-        TweenMax.to(this.camera.rotation, 3, {z: 0, ease: Quad.easeInOut, delay: 0.5});
-        TweenMax.to(camera, 2, {acceleration: 0, ease: Quad.easeOut});
+        console.log("stop", this.camera);
+        if(null!= this.camera.tmpRotation)
+            TweenMax.to(this.camera, 3, {tmpRotation: 0, ease: Quad.easeInOut, delay: 0.5});
+
+        TweenMax.to(this.camera, 2, {acceleration: 0, ease: Quad.easeOut});
     }
 };
 
