@@ -1,136 +1,135 @@
-var supports = require('./Utils/Supports');
+var Supports = require('./Utils/Supports');
+var Scene = require('./Utils/Scene');
+var Camera = require('./Utils/Camera');
+var Listener = require('./Utils/Listener');
+var Renderer = require('./Utils/Renderer');
+var Ui = require('./UI');
 
-var scene = require('./Utils/Scene').create();
-var cameraUtils = require('./Utils/Camera');
-var camera = cameraUtils.create();
-scene.add(camera);
-var listenerUtils = require('./Utils/Listener');
-var listener = listenerUtils.create(camera);
-var rendererUtils = require('./Utils/Renderer');
-var renderer = rendererUtils.create();
-
-var terrain = require('./Terrain').create(scene, camera, renderer);
-var sounds = require('./Sounds').create(listener);
+var Terrain = require('./Terrain');
+var Sounds = require('./Sounds');
 var Fish = require('./Models/fish.js');
-Fish.setScene(scene);
-Fish.setListener(listener);
-
-var particles = require('./Models/particles.js').create(camera);
-
-var lights = require('./Models/lights.js');
-lights.addAsChild(camera, scene);
-
+var Particles = require('./Models/particles.js');
+var Lights = require('./Models/lights.js');
 var Lantern = require('./Models/lantern.js');
-Lantern.attachAsChild(scene);
+var Gauge = require('./UI/gauge.js');
+var Controls = require('./Controls');
+var Raycaster = require('./Controls/raycaster.js');
 
-//var heroLantern = new Lantern();
+var fishList = require('./fishList');
+var dbg = require('debug')('luma:app');
 
-var gauge = require('./UI/gauge.js').create(camera);
+// Enable debug
+window.myDebug = require("debug");
 
-var controls = require('./Controls');
-var touchControls;
-var rotationControls;
-var fRenderer;
+var App = {
 
-touchControls = controls.initTouchMovements(camera);
+    init:function() {
+        dbg('init');
+        this.scene = Scene.create();
+        this.camera = Camera.create();
+        this.listener = Listener.create(this.camera);
+        this.renderer = Renderer.create();
+        this.fishes = [];
+        Ui.createTarget(this.camera);
 
-if(supports.isMobile()) {
-    rotationControls = controls.create(camera);
+        this.clock = new THREE.Clock();
 
-    fRenderer = rendererUtils.setCardboardEffect();
-} else {
-    rotationControls = controls.createMouse(camera, renderer);
-    fRenderer = renderer;
-}
+        this.initElements();
+        this.initEvents();
+        this.getDevice();
+        this.launch();
+        this.createElements();
+        this.initAssets();
 
-var UI = require('./UI');
-UI.createTarget(camera);
+        return this;
+    },
+    
+    initElements: function() {
+        dbg('initialize elements');
+        this.$els = {
+            toggleFullScreenBtn: document.getElementById('playBtn'),
+            toggleAudioBtn: document.getElementById('toggleAudioBtn'),
+            wrapper: document.getElementById('wrapper'),
+            window: window
+        };
+    },
+    
+    initEvents: function() {
+        dbg('initialize events');
+        this.$els.toggleFullScreenBtn.addEventListener('click', this.toggleFullScreen.bind(this));
+        this.$els.toggleAudioBtn.addEventListener('click', this.toggleAudio.bind(this));
+        this.$els.window.addEventListener('resize', this.onWindowResize.bind(this), false );
+    },
 
-var raycaster = require('./Controls/raycaster.js').create(scene, camera, UI, terrain);
+    toggleFullScreen: function() {
+        Ui.toggleFullScreen(this.$els.wrapper,  Supports);
+    },
 
-var clock = new THREE.Clock();
+    toggleAudio: function() {
+        Ui.toggleAudio(Listener);
+    },
 
-console.log(scene);
+    onWindowResize: function() {
+        Ui.onWindowResize(Camera, Renderer);
+    },
 
-/**
- * Create model instances
- */
+    initAssets: function() {
+        dbg('load assets');
+        Fish.loadAssets(this.createFishes.bind(this));
+    },
 
-// var fish = new Fish({name: "Bathocyroe fosteri"});
-// var fish2 = new Fish({name: "Chauliode de Sloane"});
+    launch: function() {
+        dbg('launch');
+        this.scene.add(this.camera);
+        this.sound = Sounds.create(this.listener);
+    },
 
-for (var i = 0; i < 10; i++) {
-    new Fish({name: "Bathocyroe fosteri n°" + i});
-}
+    createElements: function() {
+        dbg('create elements');
+        Lights.addAsChild(this.camera, this.scene);
+        Lantern.attachAsChild(this.scene);
+        this.gauge = Gauge.create(this.camera);
+        this.terrain = Terrain.create(this.scene, this.camera, this.renderer);
+        this.particles = Particles.create(this.camera);
+        this.raycaster = Raycaster.create(this.scene, this.camera, Ui, this.terrain);
+    },
 
-
-/**
- * FullScreen Toggle Button
- */
-var toggleFullScreenBtn = document.getElementById('playBtn');
-toggleFullScreenBtn.addEventListener('click', toggleFullScreen);
-function toggleFullScreen (){
-    var domElem = document.getElementById('wrapper');
-
-    if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement) {
-        if (domElem.requestFullscreen) {
-            domElem.requestFullscreen();
-        } else if (domElem.mozRequestFullScreen) {
-            domElem.mozRequestFullScreen();
-        } else if (domElem.webkitRequestFullscreen) {
-            domElem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+    createFishes: function() {
+        for(var i = 0 ; i < fishList.length; i++) {
+            var fishName = fishList[i].name;
+            this.fishes.push(Fish.create(this.scene, this.listener, fishName));
         }
-    } else {
-        if (document.cancelFullScreen) {
-            document.cancelFullScreen();
-        } else if (document.mozCancelFullScreen) {
-            document.mozCancelFullScreen();
-        } else if (document.webkitCancelFullScreen) {
-            document.webkitCancelFullScreen();
+    },
+
+    getDevice: function() {
+        dbg('get device');
+        touchControls = Controls.initTouchMovements(this.camera);
+
+        if(Supports.isMobile()) {
+            this.rotationControls = Controls.create(this.camera);
+            this.renderer = Renderer.setCardboardEffect();
+        } else {
+            this.rotationControls = Controls.createMouse(this.camera, this.renderer);
         }
+    },
+    
+    render: function() {
+        var delta = 0.75 * this.clock.getDelta();
+
+        requestAnimationFrame(this.render.bind(this));
+
+        this.rotationControls.update();
+        //touchControls.update();
+        this.raycaster.update();
+        Camera.render();
+
+        this.renderer.render(this.scene, this.camera);
+
+        Fish.update(this.fishes, delta);
+        this.gauge.update();
     }
 
-    if(supports.isMobile()) {
-        screen.orientation.lock("landscape-primary");
-    }
-}
-
-/**
- * Audio Toggle Button
- */
-var toggleAudioBtn = document.getElementById('toggleAudioBtn');
-toggleAudioBtn.addEventListener('click', toggleAudio);
-function toggleAudio(){
-    listenerUtils.toggle();
-}
-
-/**
- * Render
- */
-var render = function() {
-    var delta = 0.75 * clock.getDelta();
-
-    requestAnimationFrame(render);
-
-    rotationControls.update();
-    //touchControls.update();
-    raycaster.update();
-    cameraUtils.render();
-
-    fRenderer.render(scene, camera);
-
-    Fish.update(delta);
-    gauge.update();
 };
 
-render();
-
-/**
- * On Window Resize
- */
-window.addEventListener( 'resize', onWindowResize, false );
-function onWindowResize() {
-    cameraUtils.handleResize();
-    rendererUtils.handleResize();
-    //controls.handleResize();
-}
+var app = App.init();
+app.render();
