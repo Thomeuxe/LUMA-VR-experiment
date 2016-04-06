@@ -29,6 +29,8 @@ var Controls = {
             this.stop(camera);
         }.bind(this), false);
 
+        TweenMax.set(camera.rotation, {z: 0});
+
         return this;
     },
 
@@ -56,11 +58,12 @@ var Controls = {
 
     goForward: function (camera) {
         console.log("yo", camera);
-        TweenMax.to(camera, 1, {acceleration: -3, ease: Quad.easeIn});
+        TweenMax.to(camera, 1, {acceleration: -6, ease: Quad.easeIn});
     },
 
     stop: function (camera) {
         console.log("stop", camera);
+        TweenMax.to(this.camera.rotation, 3, {z: 0, ease: Quad.easeInOut, delay: 0.5});
         TweenMax.to(camera, 2, {acceleration: 0, ease: Quad.easeOut});
     }
 };
