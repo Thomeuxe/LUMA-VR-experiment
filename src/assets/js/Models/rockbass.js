@@ -27,7 +27,9 @@ Rockbass._setBase = function(geometry, materials) {
     material.skinning = true;
   } );
 
-  Rockbass._base = new THREE.SkinnedMesh( geometry, new THREE.MultiMaterial( materials ) );
+  var mesh = new THREE.SkinnedMesh( geometry, materials[0] );
+  mesh.scale.set( 2, 2, 2 );
+  Rockbass._base = mesh;
   Rockbass._loadingBase = false;
   // Instanciate wait list objects
   for (var i = 0; i < Rockbass._needsInit.length; i++) {
@@ -83,8 +85,6 @@ Rockbass.prototype.init = function () {
 
 Rockbass.prototype.initAnimation = function (object) {
   this.mixer = new THREE.AnimationMixer(this.mesh);
-
-  console.log(object);
 
   this.action = this.mixer.clipAction( object.geometry.animations[ 0 ] );
   this.action.play();
