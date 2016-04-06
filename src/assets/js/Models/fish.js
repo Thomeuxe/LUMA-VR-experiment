@@ -30,13 +30,15 @@ var Fish = {
     return this;
   },
 
-  loadAssets: function(cb) {
+  loadAssets: function(successCb, progressCb) {
       dbg('Load fish assets');
       var _self = this;
       var loader = new THREE.ObjectLoader();
       loader.load('assets/js/Models/skinned/fish.json', function(asset) {
-          _self.assetsLoaded(asset, cb);
-      }, function(){}, function() {
+          _self.assetsLoaded(asset, successCb);
+      }, function(event){
+          _self.assetsLoading(event, progressCb)
+      }, function() {
           dbg('Error: load fish assets');
       });
   },
@@ -46,6 +48,13 @@ var Fish = {
       this.asset = asset;
       cb();
   },
+
+    assetsLoading: function(event, progressCb) {
+        progressCb({
+            key: 'fishJson',
+            value: event.loaded / event.total
+        })
+    },
 
   update: function(instances, delta) {
     instances.forEach(function (instance) {

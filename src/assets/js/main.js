@@ -32,6 +32,7 @@ var App = {
         this.renderer = Renderer.create();
         this.fishes = [];
         this.rockbasses = [];
+        this.progressStatus = [];
         Ui.createTarget(this.camera);
 
         this.clock = new THREE.Clock();
@@ -77,8 +78,20 @@ var App = {
 
     initAssets: function() {
         dbg('load assets');
-        Fish.loadAssets(this.createFishes.bind(this));
-        Rockbass.loadAssets(this.createRockbass.bind(this));
+        Fish.loadAssets(this.createFishes.bind(this), this.assetsLoadingProgress.bind(this));
+        Rockbass.loadAssets(this.createRockbass.bind(this), this.assetsLoadingProgress.bind(this));
+    },
+
+    assetsLoadingProgress: function(progress) {
+        this.progressStatus[progress.key] = progress.value;
+        var sum = 0;
+        var divider = 0;
+        for(var key in this.progressStatus) {
+            sum += this.progressStatus[key];
+            divider ++;
+        }
+        var percentage = sum / divider;
+        dbg('Global asset loading progress', percentage);
     },
 
     launch: function() {
