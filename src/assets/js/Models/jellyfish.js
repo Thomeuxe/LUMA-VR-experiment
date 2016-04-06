@@ -1,15 +1,15 @@
-var dbg = require('debug')('luma:rockbass');
+var dbg = require('debug')('luma:jellyfish');
 
-var Rockbass = {
+var Jellyfish = {
 
   create: function(scene, listener, name) {
-    dbg('create rockbass ' + name);
+    dbg('create jellyfish ' + name);
     this.name = name;
     this.mesh = this.asset.clone();
     this.mesh.animations = this.asset.animations;
-    this.mesh.position.x = Math.random() * 100;
-    this.mesh.position.y = Math.random() * 100;
-    this.mesh.position.z = Math.random() * 100;
+    this.mesh.position.x = 0;
+    this.mesh.position.y = 1000;
+    this.mesh.position.z = 0;
     this.mesh.name = name;
 
     scene.add(this.mesh);
@@ -24,32 +24,31 @@ var Rockbass = {
 
     this.meshCollider.targetable = true;
 
-    this.initAnimation(this.mesh);
+    //this.initAnimation(this.mesh);
     this.initAudio(listener);
 
     return this;
   },
 
   loadAssets: function(successCb, progressCb) {
-    dbg('Load rockbass assets');
+    dbg('Load jellyfish assets');
     var _self = this;
     var loader = new THREE.JSONLoader();
-    loader.load('assets/js/Models/skinned/rockbass.json', function(geometry, materials) {
+    loader.load('assets/js/Models/skinned/jellyfish.json', function(geometry, materials) {
       _self.assetsLoaded(geometry, materials, successCb);
     }, function(event) {
       _self.assetsLoading(event, progressCb);
     }, function() {
-      dbg('Error: load rockbass assets');
+      dbg('Error: load jellyfish assets');
     });
   },
 
   assetsLoaded: function(geometry, materials, cb) {
-    dbg('rockbass assets loaded');
-    materials.forEach( function (material) {
-      material.skinning = true;
-    } );
+    dbg('jellyfish assets loaded');
 
-    var mesh = new THREE.SkinnedMesh( geometry, materials[0] );
+    console.log(geometry);
+
+    var mesh = new THREE.SkinnedMesh( geometry );
     mesh.scale.set( 2, 2, 2 );
     this.asset = mesh;
     cb();
@@ -57,7 +56,7 @@ var Rockbass = {
 
   assetsLoading: function(event, progressCb) {
     progressCb({
-      key: 'rockbassJson',
+      key: 'jellyfishJson',
       value: event.loaded / event.total
     })
   },
@@ -88,4 +87,4 @@ var Rockbass = {
   }
 };
 
-module.exports = Rockbass;
+module.exports = Jellyfish;

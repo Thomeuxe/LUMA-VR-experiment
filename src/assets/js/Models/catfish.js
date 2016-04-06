@@ -1,4 +1,4 @@
-var dbg = require('debug')('luma:fish');
+var dbg = require('debug')('luma:catfish');
 
 var Catfish = {
 
