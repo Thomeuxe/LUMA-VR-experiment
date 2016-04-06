@@ -1,83 +1,53 @@
 var dbg = require('debug')('luma:fish');
+var Animal = require('./animal.js');
 
-var Fish = {
+var Fish = _.assign({
+  type: 'fish',
 
-  create: function(scene, listener, name) {
-    dbg('create fish ' + name);
-    this.name = name;
+  create: function (scene, listener, name) {
     this.mesh = this.asset.clone();
-    this.mesh.animations = this.asset.animations;
-    this.mesh.position.set( Math.random() * 1500,  Math.random() * 10 + 1000,  Math.random() * 1500);
+    this.name = name;
     this.mesh.name = name;
+    dbg('create fish ' + name);
+
+    this.mesh.animations = this.asset.animations;
+
+    this.initPosition();
 
     scene.add(this.mesh);
 
-    var box = new THREE.Box3().setFromObject(this.mesh);
-    var geometryCollider = new THREE.SphereGeometry(box.getBoundingSphere().radius, 6, 6);
-    this.meshCollider = new THREE.Mesh(geometryCollider, new THREE.MeshBasicMaterial({wireframe: true}));
-    this.mesh.add(this.meshCollider);
-
-    this.mesh.castShadow = true;
-    this.mesh.receiveShadow = true;
-
-    this.meshCollider.targetable = true;
-
+    this.initCollider();
     this.initAnimation(this.mesh);
-    this.initAudio(listener);
+    this.initAudio('assets/sounds/fish_noise.mp3', listener);
 
     return this;
   },
 
-  loadAssets: function(successCb, progressCb) {
-      dbg('Load fish assets');
-      var _self = this;
-      var loader = new THREE.ObjectLoader();
-      loader.load('assets/js/Models/skinned/fish.json', function(asset) {
-          _self.assetsLoaded(asset, successCb);
-      }, function(event){
-          _self.assetsLoading(event, progressCb)
-      }, function() {
-          dbg('Error: load fish assets');
-      });
-  },
-
-  assetsLoaded: function(asset, cb) {
-      dbg('fish assets loaded');
-      this.asset = asset;
-      cb();
-  },
-
-    assetsLoading: function(event, progressCb) {
-        progressCb({
-            key: 'fishJson',
-            value: event.loaded / event.total
-        })
-    },
-
-  update: function(instances, delta) {
-    instances.forEach(function (instance) {
-      if (instance.mixer) {
-        instance.mixer.update(delta);
-      }
+  loadAssets: function (successCb, progressCb) {
+    dbg('Load fish assets');
+    var _self = this;
+    var loader = new THREE.ObjectLoader();
+    loader.load('assets/js/Models/skinned/fish.json', function (asset) {
+      _self.assetsLoaded(asset, successCb);
+    }, function (event) {
+      _self.assetsLoading(event, progressCb)
+    }, function () {
+      dbg('Error: load fish assets');
     });
   },
 
-  initAnimation: function (object) {
-      this.mixer = new THREE.AnimationMixer(this.mesh);
-
-      this.action = this.mixer.clipAction(object.animations[0]);
-      this.action.play();
+  assetsLoaded: function (asset, cb) {
+    dbg('fish assets loaded');
+    this.asset = asset;
+    cb();
   },
 
-  initAudio: function (listener) {
-      this.audio = new THREE.PositionalAudio( listener );
-      this.audio.load( 'assets/sounds/fish_noise.mp3' );
-      this.audio.setRefDistance( 4 );
-      this.audio.setLoop(true);
-      this.audio.autoplay = true;
-      this.audio.setVolume(3);
-      this.mesh.add( this.audio );
+  initAnimation: function (object) {
+    this.mixer = new THREE.AnimationMixer(this.mesh);
+
+    this.action = this.mixer.clipAction(object.animations[0]);
+    this.action.play();
   }
-}
+}, Animal);
 
 module.exports = Fish;
