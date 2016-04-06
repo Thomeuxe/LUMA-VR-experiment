@@ -7,6 +7,7 @@ var Ui = require('./UI');
 
 var Terrain = require('./Terrain');
 var Sounds = require('./Sounds');
+var Animal = require('./Models/animal.js');
 var Fish = require('./Models/fish.js');
 var Rockbass = require('./Models/rockbass.js');
 var Jellyfish = require('./Models/jellyfish.js');
@@ -32,10 +33,7 @@ var App = {
         this.camera = Camera.create();
         this.listener = Listener.create(this.camera);
         this.renderer = Renderer.create();
-        this.fishes = [];
-        this.rockbasses = [];
-        this.catfishes = [];
-        this.jellyfishes = [];
+        this.animals = [];
         this.progressStatus = [];
         Ui.createTarget(this.camera);
 
@@ -119,28 +117,28 @@ var App = {
     createFishes: function() {
         for(var i = 0 ; i < fishList.length; i++) {
             var fishName = fishList[i].name + ' the fish';
-            this.fishes.push(Fish.create(this.scene, this.listener, fishName));
+            this.animals.push(Fish.create(this.scene, this.listener, fishName));
         }
     },
 
     createRockbass: function() {
         for(var i = 0 ; i < fishList.length; i++) {
             var fishName = fishList[i].name + ' the rockbass';
-            this.rockbasses.push(Rockbass.create(this.scene, this.listener, fishName));
+            this.animals.push(Rockbass.create(this.scene, this.listener, fishName));
         }
     },
 
     createCatfish: function() {
         for(var i = 0 ; i < fishList.length; i++) {
             var fishName = fishList[i].name + ' the catfish';
-            this.catfishes.push(Catfish.create(this.scene, this.listener, fishName));
+            this.animals.push(Catfish.create(this.scene, this.listener, fishName));
         }
     },
 
     createJellyfish: function() {
         for(var i = 0 ; i < fishList.length; i++) {
             var fishName = fishList[i].name + ' the jellyfish';
-            this.jellyfishes.push(Jellyfish.create(this.scene, this.listener, fishName));
+            this.animals.push(Jellyfish.create(this.scene, this.listener, fishName));
         }
     },
 
@@ -168,10 +166,7 @@ var App = {
 
         this.renderer.render(this.scene, this.camera);
 
-        Fish.update(this.fishes, delta);
-        Rockbass.update(this.rockbasses, delta);
-        Catfish.update(this.catfishes, delta);
-        Jellyfish.update(this.jellyfishes, delta);
+        Animal.update(this.animals, delta);
         this.gauge.update();
     }
 };
