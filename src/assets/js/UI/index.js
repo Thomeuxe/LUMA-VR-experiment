@@ -80,10 +80,10 @@ var UI = {
             }
         }
 
-        domElem.requestPointerLock = domElem.requestPointerLock ||
-        domElem.mozRequestPointerLock ||
-        domElem.webkitRequestPointerLock;
-        domElem.requestPointerLock();
+        wrapper.requestPointerLock = wrapper.requestPointerLock ||
+        wrapper.mozRequestPointerLock ||
+        wrapper.webkitRequestPointerLock;
+        wrapper.requestPointerLock();
 
         if(supports.isMobile()) {
             screen.orientation.lock("landscape-primary");
