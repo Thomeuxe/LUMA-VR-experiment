@@ -8,6 +8,7 @@ var Ui = require('./UI');
 var Terrain = require('./Terrain');
 var Sounds = require('./Sounds');
 var Fish = require('./Models/fish.js');
+var Rockbass = require('./Models/rockbass.js');
 var Particles = require('./Models/particles.js');
 var Lights = require('./Models/lights.js');
 var Lantern = require('./Models/lantern.js');
@@ -30,6 +31,7 @@ var App = {
         this.listener = Listener.create(this.camera);
         this.renderer = Renderer.create();
         this.fishes = [];
+        this.rockbasses = [];
         Ui.createTarget(this.camera);
 
         this.clock = new THREE.Clock();
@@ -76,6 +78,7 @@ var App = {
     initAssets: function() {
         dbg('load assets');
         Fish.loadAssets(this.createFishes.bind(this));
+        Rockbass.loadAssets(this.createRockbass.bind(this));
     },
 
     launch: function() {
@@ -96,8 +99,15 @@ var App = {
 
     createFishes: function() {
         for(var i = 0 ; i < fishList.length; i++) {
-            var fishName = fishList[i].name;
+            var fishName = fishList[i].name + ' the fish';
             this.fishes.push(Fish.create(this.scene, this.listener, fishName));
+        }
+    },
+
+    createRockbass: function() {
+        for(var i = 0 ; i < fishList.length; i++) {
+            var fishName = fishList[i].name + ' the rockbass';
+            this.rockbasses.push(Rockbass.create(this.scene, this.listener, fishName));
         }
     },
 
@@ -126,9 +136,9 @@ var App = {
         this.renderer.render(this.scene, this.camera);
 
         Fish.update(this.fishes, delta);
+        Rockbass.update(this.rockbasses, delta);
         this.gauge.update();
     }
-
 };
 
 var app = App.init();
