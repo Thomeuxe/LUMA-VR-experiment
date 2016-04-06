@@ -25,10 +25,12 @@ var particles = require('./Models/particles.js').create(camera);
 var lights = require('./Models/lights.js');
 lights.addAsChild(camera, scene);
 
+/*
 var Lantern = require('./Models/lantern.js');
-Lantern.attachAsChild(scene);
+Lantern.attachAsChild(camera);
 
-//var heroLantern = new Lantern();
+var heroLantern = new Lantern();
+*/
 
 var gauge = require('./UI/gauge.js').create(camera);
 
