@@ -3,19 +3,17 @@ var dbg = require('debug')('luma:jellyfish');
 var Jellyfish = {
 
   create: function(scene, listener, name) {
-    dbg('create jellyfish ' + name);
     this.name = name;
     this.mesh = this.asset.clone();
-    this.mesh.animations = this.asset.animations;
-    this.mesh.position.x = 0;
-    this.mesh.position.y = 1000;
-    this.mesh.position.z = 0;
+    this.mesh.position.set( Math.random() * 1500,  Math.random() * 10 + 1000,  Math.random() * 1500);
+    dbg('create jellyfish ' + name + ' at position [' + this.mesh.position.x + ', ' + this.mesh.position.y + ', ' + this.mesh.position.z + ']' );
+
     this.mesh.name = name;
 
     scene.add(this.mesh);
 
     var box = new THREE.Box3().setFromObject(this.mesh);
-    var geometryCollider = new THREE.SphereGeometry(box.getBoundingSphere().radius, 6, 6);
+    var geometryCollider = new THREE.SphereGeometry(box.getBoundingSphere().radius * 0.7, 6, 6);
     this.meshCollider = new THREE.Mesh(geometryCollider, new THREE.MeshBasicMaterial({wireframe: true}));
     this.mesh.add(this.meshCollider);
 
@@ -46,9 +44,7 @@ var Jellyfish = {
   assetsLoaded: function(geometry, materials, cb) {
     dbg('jellyfish assets loaded');
 
-    console.log(geometry);
-
-    var mesh = new THREE.SkinnedMesh( geometry );
+    var mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial({color: 0x431655, transparent: true, opacity: 0.35}) );
     mesh.scale.set( 2, 2, 2 );
     this.asset = mesh;
     cb();

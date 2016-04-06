@@ -85,7 +85,7 @@ var App = {
         Fish.loadAssets(this.createFishes.bind(this), this.assetsLoadingProgress.bind(this));
         Rockbass.loadAssets(this.createRockbass.bind(this), this.assetsLoadingProgress.bind(this));
         Catfish.loadAssets(this.createCatfish.bind(this), this.assetsLoadingProgress.bind(this));
-        //Jellyfish.loadAssets(this.createJellyfish.bind(this), this.assetsLoadingProgress.bind(this));
+        Jellyfish.loadAssets(this.createJellyfish.bind(this), this.assetsLoadingProgress.bind(this));
     },
 
     assetsLoadingProgress: function(progress) {
@@ -171,7 +171,7 @@ var App = {
         Fish.update(this.fishes, delta);
         Rockbass.update(this.rockbasses, delta);
         Catfish.update(this.catfishes, delta);
-        //Jellyfish.update(this.jellyfishes, delta);
+        Jellyfish.update(this.jellyfishes, delta);
         this.gauge.update();
     }
 };
