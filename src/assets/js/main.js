@@ -42,6 +42,7 @@ if(supports.isMobile()) {
     fRenderer = rendererUtils.setCardboardEffect();
 } else {
     rotationControls = controls.createMouse(camera, renderer);
+    console.log(rotationControls);
     fRenderer = renderer;
 }
 
@@ -91,6 +92,11 @@ function toggleFullScreen (){
             document.webkitCancelFullScreen();
         }
     }
+
+    domElem.requestPointerLock = domElem.requestPointerLock ||
+        domElem.mozRequestPointerLock ||
+        domElem.webkitRequestPointerLock;
+    domElem.requestPointerLock();
 
     if(supports.isMobile()) {
         screen.orientation.lock("landscape-primary");
