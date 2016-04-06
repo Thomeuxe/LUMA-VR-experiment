@@ -1,6 +1,7 @@
 var Controls = {
     create: function (camera) {
         this.camera = camera;
+        this.camera.tmpRotation = 0;
         return new THREE.DeviceOrientationControls(camera);
     },
 
@@ -59,12 +60,10 @@ var Controls = {
     },
 
     goForward: function (camera) {
-        console.log("yo", this.camera);
         TweenMax.to(this.camera, 1, {acceleration: -6, ease: Quad.easeIn});
     },
 
     stop: function (camera) {
-        console.log("stop", this.camera);
         if(null!= this.camera.tmpRotation)
             TweenMax.to(this.camera, 3, {tmpRotation: 0, ease: Quad.easeInOut, delay: 0.5});
 
