@@ -1,159 +1,169 @@
-var supports = require('./Utils/Supports');
+var Supports = require('./Utils/Supports');
+var Scene = require('./Utils/Scene');
+var Camera = require('./Utils/Camera');
+var Listener = require('./Utils/Listener');
+var Renderer = require('./Utils/Renderer');
+var Ui = require('./UI');
 
-var scene = require('./Utils/Scene').create();
-var cameraUtils = require('./Utils/Camera');
-var camera = cameraUtils.create();
-scene.add(camera);
-var listenerUtils = require('./Utils/Listener');
-var listener = listenerUtils.create(camera);
-var rendererUtils = require('./Utils/Renderer');
-var renderer = rendererUtils.create();
-
-var terrain = require('./Terrain').create(scene, camera, renderer);
-var sounds = require('./Sounds').create(listener);
+var Terrain = require('./Terrain');
+var Sounds = require('./Sounds');
 var Fish = require('./Models/fish.js');
-Fish.setScene(scene);
-Fish.setListener(listener);
-
-// Rockbass Fish
 var Rockbass = require('./Models/rockbass.js');
-Rockbass.setScene(scene);
-Rockbass.setListener(listener);
-
-// Rockbass Fish
 var Catfish = require('./Models/catfish.js');
-Catfish.setScene(scene);
-Catfish.setListener(listener);
-
-var particles = require('./Models/particles.js').create(camera);
-
-var lights = require('./Models/lights.js');
-lights.addAsChild(camera, scene);
-
-/*
+var Particles = require('./Models/particles.js');
+var Lights = require('./Models/lights.js');
 var Lantern = require('./Models/lantern.js');
-Lantern.attachAsChild(camera);
+var Gauge = require('./UI/gauge.js');
+var Controls = require('./Controls');
+var Raycaster = require('./Controls/raycaster.js');
 
-var heroLantern = new Lantern();
-*/
+var fishList = require('./fishList');
+var dbg = require('debug')('luma:app');
 
-var gauge = require('./UI/gauge.js').create(camera);
+// Enable debug
+window.myDebug = require("debug");
 
-var controls = require('./Controls');
-var touchControls;
-var rotationControls;
-var fRenderer;
+var App = {
 
-touchControls = controls.initTouchMovements(camera);
+    init:function() {
+        dbg('init');
+        this.scene = Scene.create();
+        this.camera = Camera.create();
+        this.listener = Listener.create(this.camera);
+        this.renderer = Renderer.create();
+        this.fishes = [];
+        this.rockbasses = [];
+        this.catfishes = [];
+        this.progressStatus = [];
+        Ui.createTarget(this.camera);
 
-if(supports.isMobile()) {
-    rotationControls = controls.create(camera);
+        this.clock = new THREE.Clock();
 
-    fRenderer = rendererUtils.setCardboardEffect();
-    fRenderer = renderer;
-} else {
-    rotationControls = controls.createMouse(camera, renderer);
-    console.log(rotationControls);
-    fRenderer = renderer;
-}
+        this.initElements();
+        this.initEvents();
+        this.getDevice();
+        this.launch();
+        this.createElements();
+        this.initAssets();
 
-var UI = require('./UI');
-UI.createTarget(camera);
+        return this;
+    },
 
-var raycaster = require('./Controls/raycaster.js').create(scene, camera, UI, terrain);
+    initElements: function() {
+        dbg('initialize elements');
+        this.$els = {
+            toggleFullScreenBtn: document.getElementById('playBtn'),
+            toggleAudioBtn: document.getElementById('toggleAudioBtn'),
+            wrapper: document.getElementById('wrapper'),
+            window: window
+        };
+    },
 
-var clock = new THREE.Clock();
+    initEvents: function() {
+        dbg('initialize events');
+        this.$els.toggleFullScreenBtn.addEventListener('click', this.toggleFullScreen.bind(this));
+        this.$els.toggleAudioBtn.addEventListener('click', this.toggleAudio.bind(this));
+        this.$els.window.addEventListener('resize', this.onWindowResize.bind(this), false );
+    },
 
-console.log(scene);
+    toggleFullScreen: function() {
+        Ui.toggleFullScreen(this.$els.wrapper,  Supports);
+    },
 
-/**
- * Create model instances
- */
+    toggleAudio: function() {
+        Ui.toggleAudio(Listener);
+    },
 
-// var fish = new Fish({name: "Bathocyroe fosteri"});
-// var fish2 = new Fish({name: "Chauliode de Sloane"});
+    onWindowResize: function() {
+        Ui.onWindowResize(Camera, Renderer);
+    },
 
-for (var i = 0; i < 5; i++) {
-    new Fish({name: "Fish n°" + i});
-    new Rockbass({name: "Rockbass n°" + i});
-    new Catfish({name: "Catfish n°" + i});
-}
+    initAssets: function() {
+        dbg('load assets');
+        Fish.loadAssets(this.createFishes.bind(this), this.assetsLoadingProgress.bind(this));
+        Rockbass.loadAssets(this.createRockbass.bind(this), this.assetsLoadingProgress.bind(this));
+        Catfish.loadAssets(this.createCatfish.bind(this), this.assetsLoadingProgress.bind(this));
+    },
 
-
-/**
- * FullScreen Toggle Button
- */
-var toggleFullScreenBtn = document.getElementById('playBtn');
-toggleFullScreenBtn.addEventListener('click', toggleFullScreen);
-function toggleFullScreen (){
-    var domElem = document.getElementById('wrapper');
-
-    if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement) {
-        if (domElem.requestFullscreen) {
-            domElem.requestFullscreen();
-        } else if (domElem.mozRequestFullScreen) {
-            domElem.mozRequestFullScreen();
-        } else if (domElem.webkitRequestFullscreen) {
-            domElem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+    assetsLoadingProgress: function(progress) {
+        this.progressStatus[progress.key] = progress.value;
+        var sum = 0;
+        var divider = 0;
+        for(var key in this.progressStatus) {
+            sum += this.progressStatus[key];
+            divider ++;
         }
-    } else {
-        if (document.cancelFullScreen) {
-            document.cancelFullScreen();
-        } else if (document.mozCancelFullScreen) {
-            document.mozCancelFullScreen();
-        } else if (document.webkitCancelFullScreen) {
-            document.webkitCancelFullScreen();
+        var percentage = sum / divider;
+        dbg('Global asset loading progress', percentage);
+    },
+
+    launch: function() {
+        dbg('launch');
+        this.scene.add(this.camera);
+        this.sound = Sounds.create(this.listener);
+    },
+
+    createElements: function() {
+        dbg('create elements');
+        Lights.addAsChild(this.camera, this.scene);
+        Lantern.attachAsChild(this.scene);
+        this.gauge = Gauge.create(this.camera);
+        this.terrain = Terrain.create(this.scene, this.camera, this.renderer);
+        this.particles = Particles.create(this.camera);
+        this.raycaster = Raycaster.create(this.scene, this.camera, Ui, this.terrain);
+    },
+
+    createFishes: function() {
+        for(var i = 0 ; i < fishList.length; i++) {
+            var fishName = fishList[i].name + ' the fish';
+            this.fishes.push(Fish.create(this.scene, this.listener, fishName));
         }
+    },
+
+    createRockbass: function() {
+        for(var i = 0 ; i < fishList.length; i++) {
+            var fishName = fishList[i].name + ' the rockbass';
+            this.rockbasses.push(Rockbass.create(this.scene, this.listener, fishName));
+        }
+    },
+
+    createCatfish: function() {
+        for(var i = 0 ; i < fishList.length; i++) {
+            var fishName = fishList[i].name + ' the rockbass';
+            this.catfishes.push(Catfish.create(this.scene, this.listener, fishName));
+        }
+    },
+
+    getDevice: function() {
+        dbg('get device');
+        touchControls = Controls.initTouchMovements(this.camera);
+
+        if(Supports.isMobile()) {
+            this.rotationControls = Controls.create(this.camera);
+            this.renderer = Renderer.setCardboardEffect();
+        } else {
+            this.rotationControls = Controls.createMouse(this.camera, this.renderer);
+        }
+    },
+
+    render: function() {
+        var delta = 0.75 * this.clock.getDelta();
+
+        requestAnimationFrame(this.render.bind(this));
+
+        this.rotationControls.update();
+        //touchControls.update();
+        this.raycaster.update();
+        Camera.render();
+
+        this.renderer.render(this.scene, this.camera);
+
+        Fish.update(this.fishes, delta);
+        Rockbass.update(this.rockbasses, delta);
+        Catfish.update(this.catfishes, delta);
+        this.gauge.update();
     }
-
-    domElem.requestPointerLock = domElem.requestPointerLock ||
-        domElem.mozRequestPointerLock ||
-        domElem.webkitRequestPointerLock;
-    domElem.requestPointerLock();
-
-    if(supports.isMobile()) {
-        screen.orientation.lock("landscape-primary");
-    }
-}
-
-/**
- * Audio Toggle Button
- */
-var toggleAudioBtn = document.getElementById('toggleAudioBtn');
-toggleAudioBtn.addEventListener('click', toggleAudio);
-function toggleAudio(){
-    listenerUtils.toggle();
-}
-
-/**
- * Render
- */
-var render = function() {
-    var delta = 0.75 * clock.getDelta();
-
-    requestAnimationFrame(render);
-
-    rotationControls.update();
-    //touchControls.update();
-    raycaster.update();
-    cameraUtils.render();
-
-    fRenderer.render(scene, camera);
-
-    Fish.update(delta);
-    Rockbass.update(delta);
-    Catfish.update(delta);
-    gauge.update();
 };
 
-render();
-
-/**
- * On Window Resize
- */
-window.addEventListener( 'resize', onWindowResize, false );
-function onWindowResize() {
-    cameraUtils.handleResize();
-    rendererUtils.handleResize();
-    //controls.handleResize();
-}
+var app = App.init();
+app.render();
