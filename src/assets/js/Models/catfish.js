@@ -7,9 +7,7 @@ var Catfish = {
     this.name = name;
     this.mesh = this.asset.clone();
     this.mesh.animations = this.asset.animations;
-    this.mesh.position.x = Math.random() * 100;
-    this.mesh.position.y = Math.random() * 100;
-    this.mesh.position.z = Math.random() * 100;
+    this.mesh.position.set( Math.random() * 1500,  Math.random() * 10 + 1000,  Math.random() * 1500);
     this.mesh.name = name;
 
     scene.add(this.mesh);
