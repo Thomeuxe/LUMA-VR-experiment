@@ -20,6 +20,11 @@ var Rockbass = require('./Models/rockbass.js');
 Rockbass.setScene(scene);
 Rockbass.setListener(listener);
 
+// Rockbass Fish
+var Catfish = require('./Models/catfish.js');
+Catfish.setScene(scene);
+Catfish.setListener(listener);
+
 var particles = require('./Models/particles.js').create(camera);
 
 var lights = require('./Models/lights.js');
@@ -71,6 +76,7 @@ console.log(scene);
 for (var i = 0; i < 5; i++) {
     new Fish({name: "Fish n°" + i});
     new Rockbass({name: "Rockbass n°" + i});
+    new Catfish({name: "Catfish n°" + i});
 }
 
 
@@ -136,6 +142,7 @@ var render = function() {
 
     Fish.update(delta);
     Rockbass.update(delta);
+    Catfish.update(delta);
     gauge.update();
 };
 
