@@ -24,14 +24,14 @@ var UI = {
 
         if (!this.infoPanel) {
             this.infoPanel = new THREE.Object3D();
-            this.infoName = new THREE.Mesh(
-              new THREE.TextGeometry(parent.parent.name, {font: this.font, size: 13, height: 1}),
-              new THREE.MeshBasicMaterial({color: 0xffffff})
-            );
-
-            this.infoPanel.add(this.infoName);
+            this.infoName = this.createInfoName(parent.parent.name);
             scene.add(this.infoPanel);
+        } else {
+            this.infoPanel.remove( this.infoName );
+            this.infoName = this.createInfoName(parent.parent.name);
         }
+
+        this.infoPanel.add(this.infoName);
 
         var vector = new THREE.Vector3();
         vector.setFromMatrixPosition( parent.matrixWorld );
@@ -40,6 +40,13 @@ var UI = {
         this.infoPanel.position.set(vector.x + 30, vector.y, vector.z);
 
         this.infoPanel.visible = true;
+    },
+
+    createInfoName: function (name) {
+        return new THREE.Mesh(
+          new THREE.TextGeometry(name, {font: this.font, size: 13, height: 1}),
+          new THREE.MeshBasicMaterial({color: 0xffffff})
+        );
     },
 
     closeInfoPanel: function() {
