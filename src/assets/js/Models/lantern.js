@@ -22,31 +22,33 @@ Lantern.update = function (delta) {
 
 
 Lantern.prototype.init = function (geometry, materials) {
+
+    console.log(geometry, materials);
+
     materials.forEach( function (material) {
         material.skinning = true;
     } );
 
-    this.mesh = new THREE.SkinnedMesh( geometry, new THREE.MultiMaterial( materials ) );
-    //this.mesh = new THREE.SkinnedMesh(geometry, new THREE.MeshBasicMaterial({color: 0x00ff00}));
+    //this.mesh = new THREE.SkinnedMesh( geometry, new THREE.MultiMaterial( materials ) );
+    /*var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+    var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+    this.mesh = new THREE.Mesh( geometry, material );
+    console.log(this.mesh.rotateY(1));*/
+    var material = new THREE.MeshPhongMaterial( { color: 0xdddddd, specular: 0x009900, shininess: 30, shading: THREE.FlatShading } ) ;
+    this.mesh = new THREE.SkinnedMesh(geometry, material );
+    this.mesh.rotateY(Math.PI);
+    this.mesh.rotateX(Math.PI/8);
 
     this.mesh.position.x = 0;
-    this.mesh.position.y = 0;
-    this.mesh.position.z = -200;
+    this.mesh.position.y = -0.3;
+    this.mesh.position.z = 0;
 
-    this.mesh.scale.set(0.1, 0.1, 0.1);
+    //this.mesh.scale.set(1, 0.5, 0.5);
 
     Lantern.parent.add(this.mesh);
 
-    var geometryColliderRadius = this.mesh.geometry.boundingSphere.radius;
-    var geometryCollider = new THREE.SphereGeometry(geometryColliderRadius, 6, 6);
-    this.meshCollider = new THREE.Mesh(geometryCollider, new THREE.MeshBasicMaterial({wireframe: true}));
-    this.meshCollider.position.set(0, geometryColliderRadius / 2, 0);
-    this.mesh.add(this.meshCollider);
-
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
-
-    this.meshCollider.targetable = true;
 
     //this.initAnimation(geometry);
 
