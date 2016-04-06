@@ -45,6 +45,7 @@ if(supports.isMobile()) {
     rotationControls = controls.create(camera);
 
     fRenderer = rendererUtils.setCardboardEffect();
+    fRenderer = renderer;
 } else {
     rotationControls = controls.createMouse(camera, renderer);
     console.log(rotationControls);
