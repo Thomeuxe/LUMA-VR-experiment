@@ -112,7 +112,7 @@ var render = function() {
 
     requestAnimationFrame(render);
 
-    //rotationControls.update();
+    rotationControls.update();
     //touchControls.update();
     raycaster.update();
     cameraUtils.render();
