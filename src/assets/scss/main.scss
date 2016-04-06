@@ -20,6 +20,18 @@ canvas {
   height: 100%;
 }
 
+.onboarding {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+
+  &__logo {
+    pointer-events: none;
+  }
+}
+
 .options {
   position: absolute;
   right: 50%;
@@ -27,7 +39,6 @@ canvas {
 
 #playBtn {
   display: inline-block;
-  position: absolute;
   text-transform: uppercase;
 
   @media (max-width: 759px) {
