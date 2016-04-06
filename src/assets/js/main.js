@@ -15,6 +15,11 @@ var Fish = require('./Models/fish.js');
 Fish.setScene(scene);
 Fish.setListener(listener);
 
+// Rockbass Fish
+var Rockbass = require('./Models/rockbass.js');
+Rockbass.setScene(scene);
+Rockbass.setListener(listener);
+
 var particles = require('./Models/particles.js').create(camera);
 
 var lights = require('./Models/lights.js');
@@ -62,8 +67,9 @@ console.log(scene);
 // var fish = new Fish({name: "Bathocyroe fosteri"});
 // var fish2 = new Fish({name: "Chauliode de Sloane"});
 
-for (var i = 0; i < 10; i++) {
-    new Fish({name: "Bathocyroe fosteri n°" + i});
+for (var i = 0; i < 5; i++) {
+    new Fish({name: "Fish n°" + i});
+    new Rockbass({name: "Rockbass n°" + i});
 }
 
 
@@ -128,6 +134,7 @@ var render = function() {
     fRenderer.render(scene, camera);
 
     Fish.update(delta);
+    Rockbass.update(delta);
     gauge.update();
 };
 
