@@ -13,6 +13,8 @@ var Jellyfish = _.assign({
 
     scene.add(this.mesh);
 
+    this.goForward();
+
     this.initCollider();
     //this.initAnimation(this.mesh);
     //this.initAudio('assets/sounds/fish_noise.mp3', listener);

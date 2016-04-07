@@ -13,6 +13,8 @@ var Catfish = _.assign({
 
     this.initPosition();
 
+    this.goForward();
+
     scene.add(this.mesh);
 
     this.initCollider();

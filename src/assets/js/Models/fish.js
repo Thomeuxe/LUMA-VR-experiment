@@ -14,6 +14,9 @@ var Fish = _.assign({
     this.initPosition();
 
     scene.add(this.mesh);
+    console.log(this.mesh);
+
+    this.goForward();
 
     this.initCollider();
     this.initAnimation(this.mesh);
