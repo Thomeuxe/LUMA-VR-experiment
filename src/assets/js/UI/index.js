@@ -6,7 +6,21 @@ var UI = {
 
     createTarget: function(camera) {
         dbg('create target');
-        var target = new THREE.Mesh(new THREE.CircleGeometry(0.01), new THREE.MeshBasicMaterial({color: 0x5555ff}));
+
+
+        var targetCanvas = document.createElement("canvas");
+        canvg(targetCanvas, 'assets/img/target.svg');
+
+        var targetTexture = new THREE.Texture(targetCanvas);
+        targetTexture.needsUpdate = true;
+
+        var targetMaterial = new THREE.MeshBasicMaterial({
+            map : targetTexture,
+            transparent: true
+        });
+
+        var target = new THREE.Mesh(new THREE.CircleGeometry(0.1), targetMaterial);
+
         camera.add(target);
         target.position.set(0,0,-1.2);
 
