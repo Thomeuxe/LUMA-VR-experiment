@@ -66,7 +66,7 @@ var UI = {
 
     createInfoName: function (name, size) {
         return new THREE.Mesh(
-          new THREE.TextGeometry(name, {font: this.font, size: size, height: 1}),
+          new THREE.TextGeometry(name, {font: this.font, size: size, height: 0.1}),
           new THREE.MeshBasicMaterial({color: 0xffffff})
         );
     },
