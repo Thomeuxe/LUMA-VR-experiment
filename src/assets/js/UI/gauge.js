@@ -30,7 +30,7 @@ var Gauge = {
       }.bind(this));
     }
 
-    this.locationText = new THREE.Mesh(new THREE.TextGeometry("-12837m", {font: this.UI.font, size: 0.05, height: 0.01}), new THREE.MeshBasicMaterial( { color: 0xff0000 }));
+    this.locationText = new THREE.Mesh(new THREE.TextGeometry("", {font: this.UI.font, size: 0.05, height: 0.01}), new THREE.MeshBasicMaterial( { color: 0xff0000 }));
     this.locationText.position.set(0.1, -0.02, 0);
     //this.locationText.rotateOnAxis(new THREE.Vector3(0, 1, 1), Math.PI/4);
     this.location.add(this.locationText);
@@ -40,8 +40,7 @@ var Gauge = {
     this.value = Math.round(this.camera.position.y) - this.max;
     this.location.position.setY(this.value/this.max * 2 + 2);
     this.locationText.geometry = new THREE.TextGeometry(this.value + "m", {font: this.UI.font, size: 0.05, height: 0.01});
-    this.locationText.computeBoundingBox();
-    console.log(this.location.position.y);
+    //this.locationText.computeBoundingBox();
   }
 
 };
