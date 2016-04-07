@@ -23,6 +23,14 @@
     "OrbitControls": "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js",
     "VRControls": "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/js/controls/VRControls.js",
     "CardboardEffect": "https://raw.githubusercontent.com/mrdoob/three.js/master/examples/js/effects/CardboardEffect.js",
-    "stackblur-canvas": "~1.2.0"
+    "stackblur-canvas": "~1.2.0",
+    "Gyroscope": "https://raw.githubusercontent.com/mrdoob/three.js/cf584a60bdfd24c42eaa81d484533364742bda44/examples/js/Gyroscope.js",
+    "lodash": "~4.8.2",
+    "canvg": "^1.3.0"
+  },
+  "overrides": {
+    "canvg": {
+      "main": "dist/canvg.bundle.js"
+    }
   }
 }

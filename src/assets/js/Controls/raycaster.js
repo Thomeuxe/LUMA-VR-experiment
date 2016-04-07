@@ -50,7 +50,7 @@ Raycaster = {
 
             this.intersected = nearest;
             if (this.intersected) {
-                this.UI.openInfoPanel(this.scene, this.camera, this.intersected.object);
+                this.UI.openInfoPanel(this.scene, this.camera, this.intersected.object, intersects);
             } else {
                 this.UI.closeInfoPanel();
             }
