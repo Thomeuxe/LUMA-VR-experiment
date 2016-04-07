@@ -95,6 +95,12 @@ var App = {
             divider ++;
         }
         var percentage = sum / divider;
+        TweenMax.to("#logo-overlay", 0.2, {right: (100 - percentage*100) + "%"});
+        TweenMax.to("#logo-background", 0.2, {webkitClipPath:'inset(0 ' + (100 - percentage*100) +'% 0 0)'});
+
+        if(percentage == 1)
+            TweenMax.set("#logo-overlay", {autoAlpha: 0});
+
         dbg('Global asset loading progress', percentage);
     },
 

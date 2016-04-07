@@ -16,11 +16,13 @@
 
 <div class="onboarding">
     <div class="onboarding__logo">
-        <img src="assets/img/luma-logo.png" srcset="assets/img/luma-logo@2x.png 2x" alt="LUMA">
+        <div class="onboarding__logo__overlay" id="logo-overlay"></div>
+        <img class="onboarding__logo__text" src="assets/img/luma-logo-text.svg" width="300" alt="LUMA">
+        <img class="onboarding__logo__background" src="assets/img/luma-logo.png" id="logo-background" srcset="assets/img/luma-logo@2x.png 2x" alt="">
     </div>
 
     <div class="onboard__instructions">
-
+        <img src="assets/img/play.svg" width="80" alt="Play">
     </div>
 
     <button id="playBtn" class="btn">Play</button>
@@ -42,7 +44,6 @@
 <script src="assets/vendors/VRControls/index.js"></script>
 <script src="assets/vendors/CardboardEffect/index.js"></script>
 <script src="assets/vendors/ImprovedNoise/index.js"></script>
-<script src="assets/vendors/lodash/lodash.js"></script>
 <!-- endinject -->
 <!-- inject:js -->
 <script src="assets/js/main.browserify.js"></script>
