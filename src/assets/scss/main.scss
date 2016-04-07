@@ -29,6 +29,32 @@ canvas {
 
   &__logo {
     pointer-events: none;
+    position: relative;
+    
+    &__overlay {
+      content: '';
+      position: absolute;
+      display: block;
+      right: 50%;
+      transform: translate(1px, 0);
+      top: 0;
+      bottom: 0;
+      z-index: 1;
+      width: 40px;
+      background: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,1));
+    }
+
+    &__text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate3d(-50%, -50%, 0) translate3d(-10px, 0, 0);
+      z-index: 10;
+    }
+
+    &__background {
+      clip-path: inset(0 100% 0 0);
+    }
   }
 }
 
