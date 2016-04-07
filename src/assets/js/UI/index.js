@@ -27,11 +27,17 @@ var UI = {
         return target;
     },
 
+    loadFont: function(callback) {
+        var loader = new THREE.FontLoader();
+        loader.load( 'assets/fonts/helvetiker_regular.typeface.js', function (font) {
+            this.font = font;
+            callback();
+        }.bind(this));
+    },
+
     openInfoPanel: function(scene, camera, parent, intersects) {
         if(!this.font){
-            var loader = new THREE.FontLoader();
-            loader.load( 'assets/fonts/helvetiker_regular.typeface.js', function (font) {
-                this.font = font;
+            this.loadFont(function() {
                 this.openInfoPanel();
             }.bind(this));
             return;

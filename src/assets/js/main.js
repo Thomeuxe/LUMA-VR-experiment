@@ -29,13 +29,13 @@ var App = {
 
     init:function() {
         dbg('init');
+        this.isPlaying = false;
         this.scene = Scene.create();
         this.camera = Camera.create();
         this.listener = Listener.create(this.camera);
         this.renderer = Renderer.create();
         this.animals = [];
         this.progressStatus = [];
-        Ui.createTarget(this.camera);
 
         this.clock = new THREE.Clock();
 
@@ -68,6 +68,13 @@ var App = {
 
     toggleFullScreen: function() {
         Ui.toggleFullScreen(this.$els.wrapper,  Supports);
+
+        if(!this.isPlaying) {
+            this.createUI();
+            Sounds.initVoiceSynthesis();
+            this.isPlaying = true;
+        }
+
     },
 
     toggleAudio: function() {
@@ -107,17 +114,21 @@ var App = {
     launch: function() {
         dbg('launch');
         this.scene.add(this.camera);
-        this.sound = Sounds.create(this.listener);
+        this.sound = Sounds.create(this.listener, this.camera);
     },
 
     createElements: function() {
         dbg('create elements');
         Lights.addAsChild(this.camera, this.scene);
         Lantern.attachAsChild(this.scene);
-        this.gauge = Gauge.create(this.camera);
         this.terrain = Terrain.create(this.scene, this.camera, this.renderer);
         this.particles = Particles.create(this.camera);
         this.raycaster = Raycaster.create(this.scene, this.camera, Ui, this.terrain);
+    },
+
+    createUI: function() {
+        this.gauge = Gauge.create(this.camera, Ui);
+        Ui.createTarget(this.camera);
     },
 
     createFishes: function() {
@@ -161,15 +172,21 @@ var App = {
 
         requestAnimationFrame(this.render.bind(this));
 
-        this.rotationControls.update();
-        //touchControls.update();
-        this.raycaster.update();
+        if(this.isPlaying) {
+            this.rotationControls.update();
+            //touchControls.update();
+            this.raycaster.update();
+        }
         Camera.render();
 
         this.renderer.render(this.scene, this.camera);
 
         Animal.update(this.animals, delta);
-        this.gauge.update();
+
+        if(this.isPlaying) {
+            this.gauge.update();
+            Sounds.update();
+        }
     }
 };
 

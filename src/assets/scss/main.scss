@@ -12,8 +12,8 @@ body {
   color: #fff;
   overflow: hidden;
 
-  user-select:none;
-  -webkit-tap-highlight-color:rgba(0,0,0,0);
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 canvas {
@@ -32,7 +32,7 @@ canvas {
   &__logo {
     pointer-events: none;
     position: relative;
-    
+
     &__overlay {
       content: '';
       position: absolute;
@@ -43,7 +43,7 @@ canvas {
       bottom: 0;
       z-index: 1;
       width: 40px;
-      background: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,1));
+      background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
     }
 
     &__text {
@@ -58,6 +58,12 @@ canvas {
       clip-path: inset(0 100% 0 0);
     }
   }
+
+  &__instructions {
+    > * {
+      display: inline-block;
+    }
+  }
 }
 
 #wrapper {
@@ -67,6 +73,19 @@ canvas {
 .options {
   position: absolute;
   right: 50%;
+}
+
+.svg-stroke {
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-width: 5px;
+  stroke-linejoin: round;
+  stroke-miterlimit: 10
+}
+
+.svg-fill {
+  fill: rgba(255,255,255,1);
 }
 
 #playBtn {
@@ -81,7 +100,7 @@ canvas {
   cursor: pointer;
   box-sizing: content-box;
   padding: 0px;
-  border: solid 2px rgba(255,255,255,0);
+  border: solid 2px rgba(255, 255, 255, 0);
 
   .play-svg-icon, .play-svg-background {
     transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -95,15 +114,6 @@ canvas {
     .play-svg-background {
       transform: rotate(-90deg);
     }
-  }
-
-  @media (max-width: 759px) {
-    font-size: 40px;
-    line-height: 90px;
-    padding: 0 60px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
   }
 }
 
