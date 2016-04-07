@@ -95,7 +95,6 @@ var App = {
             divider ++;
         }
         var percentage = sum / divider;
-        console.log(percentage);
         TweenMax.to("#logo-overlay", 0.2, {right: (100 - percentage*100) + "%"});
         TweenMax.to("#logo-background", 0.2, {webkitClipPath:'inset(0 ' + (100 - percentage*100) +'% 0 0)'});
 
@@ -123,29 +122,25 @@ var App = {
 
     createFishes: function() {
         for(var i = 0 ; i < fishList.length; i++) {
-            var fishName = fishList[i].name + ' the fish';
-            this.animals.push(Fish.create(this.scene, this.listener, fishName));
+            this.animals.push(Fish.create(this.scene, this.listener));
         }
     },
 
     createRockbass: function() {
         for(var i = 0 ; i < fishList.length; i++) {
-            var fishName = fishList[i].name + ' the rockbass';
-            this.animals.push(Rockbass.create(this.scene, this.listener, fishName));
+            this.animals.push(Rockbass.create(this.scene, this.listener));
         }
     },
 
     createCatfish: function() {
         for(var i = 0 ; i < fishList.length; i++) {
-            var fishName = fishList[i].name + ' the catfish';
-            this.animals.push(Catfish.create(this.scene, this.listener, fishName));
+            this.animals.push(Catfish.create(this.scene, this.listener));
         }
     },
 
     createJellyfish: function() {
         for(var i = 0 ; i < fishList.length; i++) {
-            var fishName = fishList[i].name + ' the jellyfish';
-            this.animals.push(Jellyfish.create(this.scene, this.listener, fishName));
+            this.animals.push(Jellyfish.create(this.scene, this.listener));
         }
     },
 

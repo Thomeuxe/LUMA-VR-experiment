@@ -4,11 +4,10 @@ var Animal = require('./animal.js');
 var Rockbass = _.assign({
   type: 'rockbass',
 
-  create: function(scene, listener, name) {
+  create: function(scene, listener) {
     this.mesh = this.asset.clone();
-    this.name = name;
-    this.mesh.name = name;
-    dbg('create rockbass ' + name);
+    this.setName(this.type);
+    dbg('create rockbass ' + this.name);
 
     this.mesh.animations = this.asset.animations;
 

@@ -4,11 +4,10 @@ var Animal = require('./animal.js');
 var Jellyfish = _.assign({
   type: 'jellyfish',
 
-  create: function(scene, listener, name) {
+  create: function(scene, listener) {
     this.mesh = this.asset.clone();
-    this.name = name;
-    this.mesh.name = name;
-    dbg('create jellyfish ' + name );
+    this.setName(this.type);
+    dbg('create jellyfish ' + this.name );
 
     this.initPosition();
 
