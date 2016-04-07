@@ -68,9 +68,13 @@ var App = {
 
     toggleFullScreen: function() {
         Ui.toggleFullScreen(this.$els.wrapper,  Supports);
-        this.createUI();
-        Sounds.initVoiceSynthesis();
-        this.isPlaying = true;
+
+        if(!this.isPlaying) {
+            this.createUI();
+            Sounds.initVoiceSynthesis();
+            this.isPlaying = true;
+        }
+
     },
 
     toggleAudio: function() {
