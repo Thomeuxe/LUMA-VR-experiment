@@ -23,8 +23,6 @@ Lantern.update = function (delta) {
 
 Lantern.prototype.init = function (geometry, materials) {
 
-    console.log(geometry, materials);
-
     materials.forEach( function (material) {
         material.skinning = true;
     } );
