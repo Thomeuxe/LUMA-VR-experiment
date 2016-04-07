@@ -29,6 +29,7 @@ var App = {
 
     init:function() {
         dbg('init');
+        this.isPlaying = false;
         this.scene = Scene.create();
         this.camera = Camera.create();
         this.listener = Listener.create(this.camera);
@@ -68,6 +69,7 @@ var App = {
 
     toggleFullScreen: function() {
         Ui.toggleFullScreen(this.$els.wrapper,  Supports);
+        this.isPlaying = true;
     },
 
     toggleAudio: function() {
@@ -114,7 +116,7 @@ var App = {
         dbg('create elements');
         Lights.addAsChild(this.camera, this.scene);
         Lantern.attachAsChild(this.scene);
-        this.gauge = Gauge.create(this.camera);
+        this.gauge = Gauge.create(this.camera, Ui);
         this.terrain = Terrain.create(this.scene, this.camera, this.renderer);
         this.particles = Particles.create(this.camera);
         this.raycaster = Raycaster.create(this.scene, this.camera, Ui, this.terrain);
@@ -161,9 +163,11 @@ var App = {
 
         requestAnimationFrame(this.render.bind(this));
 
-        this.rotationControls.update();
-        //touchControls.update();
-        this.raycaster.update();
+        if(this.isPlaying) {
+            this.rotationControls.update();
+            //touchControls.update();
+            this.raycaster.update();
+        }
         Camera.render();
 
         this.renderer.render(this.scene, this.camera);
