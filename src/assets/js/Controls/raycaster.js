@@ -55,7 +55,7 @@ Raycaster = {
                 this.UI.closeInfoPanel();
             }
         }
-
+        
         if (collisions.length > 0 && collisions[0].distance < 60) {
             this.camera.position.set(
                 this.camera.position.x,

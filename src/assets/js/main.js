@@ -46,6 +46,9 @@ var App = {
         this.createElements();
         this.initAssets();
 
+        var axisHelper = new THREE.AxisHelper(1000);
+        this.scene.add(axisHelper);
+
         return this;
     },
 
@@ -80,6 +83,7 @@ var App = {
 
     initAssets: function() {
         dbg('load assets');
+        Terrain.loadAssets(this.createTerrain.bind(this), this.assetsLoadingProgress.bind(this));
         Fish.loadAssets(this.createFishes.bind(this), this.assetsLoadingProgress.bind(this));
         Rockbass.loadAssets(this.createRockbass.bind(this), this.assetsLoadingProgress.bind(this));
         Catfish.loadAssets(this.createCatfish.bind(this), this.assetsLoadingProgress.bind(this));
@@ -108,8 +112,12 @@ var App = {
         Lights.addAsChild(this.camera, this.scene);
         Lantern.attachAsChild(this.scene);
         this.gauge = Gauge.create(this.camera);
-        this.terrain = Terrain.create(this.scene, this.camera, this.renderer);
         this.particles = Particles.create(this.camera);
+    },
+
+    createTerrain: function() {
+        dbg('create terrain');
+        this.terrain = Terrain.create(this.scene, this.camera);
         this.raycaster = Raycaster.create(this.scene, this.camera, Ui, this.terrain);
     },
 
@@ -153,7 +161,7 @@ var App = {
 
         this.rotationControls.update();
         //touchControls.update();
-        this.raycaster.update();
+        if (this.raycaster) this.raycaster.update();
         Camera.render();
 
         this.renderer.render(this.scene, this.camera);
@@ -167,3 +175,4 @@ var App = {
 
 var app = App.init();
 app.render();
+window.app = app;

@@ -1,150 +1,195 @@
+var dbg = require('debug')('luma:terrain');
+
 var Terrain = {
 
-    create: function(scene, camera, renderer) {
+    heightmapPath: "./assets/img/bump.jpg",
+    texturePath: "./assets/img/topography.jpg",
+    color: 0x006994,
 
-        var width = 128;
-        var height = 128;
-        var midWidth = width / 2;
-        var midHeight = height / 2;
+    width: 1024,
+    height: 1024,
+    quality: 0.25,
+    softness: 10,
 
-        var data = this.generateHeight(width, height);
-        camera.position.y = data[ midWidth + midHeight * midWidth ] * 10 + 500;
+    loadAssets: function(successCb, progressCb) {
+        dbg('Load terrain assets');
+        var _self = this;
 
-        var geometry = new THREE.PlaneBufferGeometry( 3500, 3500, width - 1, height - 1 );
-        geometry.rotateX( - Math.PI / 2 );
+        var iLoader = new THREE.ImageLoader();
+        var tLoader = new THREE.TextureLoader();
 
-        var vertices = geometry.attributes.position.array;
-
-        for ( var i = 0, j = 0, l = vertices.length; i < l; i ++, j += 3 ) {
-            vertices[ j + 1 ] = data[ i ] * 10;
-        }
-
-        var texture = new THREE.CanvasTexture( this.generateTexture( data, width, height ) );
-        texture.wrapS = THREE.ClampToEdgeWrapping;
-        texture.wrapT = THREE.ClampToEdgeWrapping;
-
-        //mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { map: texture } ) );
-        var texture = new THREE.TextureLoader().load( './assets/img/topography.jpg' );
-        texture.mapping = THREE.SphericalReflectionMapping;
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set( 4, 4 );
-        mesh = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial( { color: 0x006994, shininess: 0, map: texture } ) );
-        scene.add( mesh );
-
-        //this.createSkyBox(scene);
-
-        return mesh;
+        iLoader.load(Terrain.heightmapPath, function(img) {
+            _self.heightmap = img;
+            tLoader.load(Terrain.texturePath, function(texture) {
+                _self.texture = texture;
+                _self.assetsLoaded(successCb);
+            }, function(event){
+                _self.assetsLoading(event, progressCb, "Texture")
+            }, function() {
+                dbg('Error: load terrain texture');
+            });
+        }, function(event){
+            _self.assetsLoading(event, progressCb, "Heightmap")
+        }, function() {
+            dbg('Error: load terrain heightmap');
+        });
     },
 
-    generateHeight: function(width, height) {
-        var size = width * height, data = new Uint8Array( size ),
-            perlin = new ImprovedNoise(), quality = 1, z = Math.random() * 5;
+    assetsLoaded: function(cb) {
+        dbg('terrain assets loaded');
+        cb();
+    },
 
-        for ( var j = 0; j < 4; j ++ ) {
+    assetsLoading: function(event, progressCb, key) {
+        progressCb({
+            key: 'terrain' + key,
+            value: event.loaded / event.total
+        })
+    },
 
-            for ( var i = 0; i < size; i ++ ) {
+    create: function(scene) {
+        dbg('create terrain');
 
-                var x = i % width, y = ~~ ( i / width );
-                data[ i ] += Math.abs( perlin.noise( x / quality, y / quality, z ) * quality * 1.75 );
+        this.imgc = document.createElement("canvas");
+        this.ictx = this.imgc.getContext("2d");
 
-            }
+        var cvs = document.createElement("canvas");
+        var ctx = cvs.getContext("2d");
 
-            quality *= 5;
+        cvs.width = this.heightmap.width;
+        cvs.height = this.heightmap.height;
+        ctx.drawImage(this.heightmap, 0, 0, this.heightmap.width, this.heightmap.height);
 
+        this.imgc.width = Terrain.width * Terrain.quality;
+        this.imgc.height = Terrain.height * Terrain.quality;
+        this.ictx.drawImage(cvs, 0, 0, cvs.width, cvs.height, 0, 0, this.imgc.width, this.imgc.height);
+
+        this.createMesh(
+            this.createGeometry(this.imageDataMinMax(this.blur(Terrain.softness)).data),
+            this.createMaterial(Terrain.color)
+        );
+
+        scene.add(this.mesh);
+
+        return this.mesh;
+    },
+
+    createMesh: function(geometry, material) {
+        dbg('create terrain : Mesh');
+        this.mesh = new THREE.Mesh(geometry, material);
+
+        return this.mesh;
+    },
+
+    createGeometry: function(data) {
+        dbg('create terrain : Geometry');
+        this.geometry = new THREE.PlaneBufferGeometry(Terrain.width, Terrain.height, this.imgc.width - 1, this.imgc.height - 1);
+        this.geometry.rotateX(- Math.PI / 2);
+
+        for (var i = 0, j = 0, l = this.geometry.attributes.position.array.length - 1; i < l; i += 3, j += 4) {
+            this.geometry.attributes.position.array[i + 1] = data[j];
+        }
+
+        return this.geometry;
+    },
+
+    imageDataMinMax: function(image) {
+        var m = this.imgc.width;
+        var n = this.imgc.height;
+
+        // find range
+        var minimum = 1000000000000000000;
+        var maximum = 0;
+        var first = true;
+        var d = 0;
+
+        for (var i=0; i<n*m; i++) {
+            try {d = image[i]}
+            catch(e) {console.log(e); console.log("i: "+i); console.log("image: "+image); break}
+
+            minimum = Math.min(minimum, d);
+            maximum = Math.max(maximum, d);
+
+            if (i == m*n-1) first = false;
+        }
+
+        var finalImage = this.ictx.createImageData(m, n);
+        var data = finalImage.data;   // pixel data array of (width*height*4) elements
+        var ceil = 255;
+        var floor = 0;
+
+        var newmin = 1000000000000000;
+        var newmax = 0;
+
+        // Convert to visible
+        for (var i = 0; i < n * m; i++) {
+            d = image[i];
+            normd = ((ceil - floor) * (d - minimum))/(maximum - minimum) + floor;
+            newmin = Math.min(newmin, normd);
+            newmax = Math.max(newmax, normd);
+            data[i*4]   = normd; //r
+            data[i*4+1] = normd; //g
+            data[i*4+2] = normd; //b
+            data[i*4+3] = 255;    //a
+        }
+
+        this.ictx.putImageData(finalImage, 0, 0);
+
+        return finalImage;
+    },
+
+    createTexture: function() {
+        dbg('create terrain : Texture');
+        this.texture.mapping = THREE.SphericalReflectionMapping;
+        this.texture.wrapS = THREE.RepeatWrapping;
+        this.texture.wrapT = THREE.RepeatWrapping;
+        this.texture.repeat.set(8, 8);
+
+        return this.texture;
+    },
+
+    createMaterial: function(color) {
+        dbg('create terrain : Material');
+        this.material = new THREE.MeshPhongMaterial({
+            color: color,
+            shininess: 0,
+            map: this.createTexture()
+        });
+
+        return this.material;
+    },
+
+    blur: function(radius) {
+        var imageData = this.imageData();
+
+        if (isNaN(radius) || radius < 1) return this.image(imageData);
+        radius |= 0;
+
+        return this.image(StackBlur.imageDataRGB(imageData, 0, 0, this.imgc.width, this.imgc.height, radius));
+    },
+
+    imageData: function() {
+        var data;
+
+        try {
+            data = this.ictx.getImageData(0, 0, this.imgc.width, this.imgc.height);
+        } catch(e) {
+            throw new Error("unable to access local image data: " + e);
         }
 
         return data;
     },
 
-    generateTexture: function(data, width, height) {
+    image: function(imageData) {
+        var data = imageData.data;
+        var image = new Array(this.imgc.width * this.imgc.height);
 
-        var canvas, canvasScaled, context, image, imageData,
-            level, diff, vector3, sun, shade;
-
-        vector3 = new THREE.Vector3( 0, 0, 0 );
-
-        sun = new THREE.Vector3( 1, 1, 1 );
-        sun.normalize();
-
-        canvas = document.createElement( 'canvas' );
-        canvas.width = width;
-        canvas.height = height;
-
-        context = canvas.getContext( '2d' );
-        context.fillStyle = '#000';
-        context.fillRect( 0, 0, width, height );
-
-        image = context.getImageData( 0, 0, canvas.width, canvas.height );
-        imageData = image.data;
-
-        for ( var i = 0, j = 0, l = imageData.length; i < l; i += 4, j ++ ) {
-
-            vector3.x = data[ j - 2 ] - data[ j + 2 ];
-            vector3.y = 2;
-            vector3.z = data[ j - width * 2 ] - data[ j + width * 2 ];
-            vector3.normalize();
-
-            shade = vector3.dot( sun );
-
-            imageData[ i ] = ( 96 + shade * 128 ) * ( 0.5 + data[ j ] * 0.007 );
-            imageData[ i + 1 ] = ( 32 + shade * 96 ) * ( 0.5 + data[ j ] * 0.007 );
-            imageData[ i + 2 ] = ( shade * 96 ) * ( 0.5 + data[ j ] * 0.007 );
+        for (var i = 0; i < this.imgc.height * this.imgc.width; i++) {
+            image[i] = data[i*4];
         }
 
-        context.putImageData( image, 0, 0 );
-
-        // Scaled 4x
-
-        canvasScaled = document.createElement( 'canvas' );
-        canvasScaled.width = width * 4;
-        canvasScaled.height = height * 4;
-
-        context = canvasScaled.getContext( '2d' );
-        context.scale( 4, 4 );
-        context.drawImage( canvas, 0, 0 );
-
-        image = context.getImageData( 0, 0, canvasScaled.width, canvasScaled.height );
-        imageData = image.data;
-
-        for ( var i = 0, l = imageData.length; i < l; i += 4 ) {
-
-            var v = ~~ ( Math.random() * 5 );
-
-            imageData[ i ] += v;
-            imageData[ i + 1 ] += v;
-            imageData[ i + 2 ] += v;
-
-        }
-
-        context.putImageData( image, 0, 0 );
-
-        return canvasScaled;
-    },
-
-    createSkyBox: function(scene) {
-        var urlPrefix	= "./assets/js/Terrain/";
-
-        var materials = [
-            urlPrefix + "posx.jpg",
-            urlPrefix + "negx.jpg",
-            urlPrefix + "posy.jpg",
-            urlPrefix + "negy.jpg",
-            urlPrefix + "posz.jpg",
-            urlPrefix + "negz.jpg"
-        ];
-
-        var skyGeometry = new THREE.CubeGeometry( 50, 50, 50 );
-
-        var materialArray = [];
-        for (var i = 0; i < 6; i++)
-            materialArray.push( new THREE.MeshBasicMaterial({
-                map: THREE.ImageUtils.loadTexture( materials[i] ),
-                side: THREE.BackSide
-            }));
-        var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
-        var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
-        scene.add( skyBox );
+        return image;
     }
 };
+
 module.exports = Terrain;
