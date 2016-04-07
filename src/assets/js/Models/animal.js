@@ -42,6 +42,11 @@ var Animal = {
     this.audio.autoplay = true;
     this.audio.setVolume(3);
     this.mesh.add( this.audio );
+  },
+
+  setName: function (name) {
+    this.name = name.charAt(0).toUpperCase() + name.slice(1);
+    this.mesh.name = this.name;
   }
 };
 
