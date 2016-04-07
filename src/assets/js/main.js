@@ -95,7 +95,6 @@ var App = {
             divider ++;
         }
         var percentage = sum / divider;
-        console.log(percentage);
         TweenMax.to("#logo-overlay", 0.2, {right: (100 - percentage*100) + "%"});
         TweenMax.to("#logo-background", 0.2, {webkitClipPath:'inset(0 ' + (100 - percentage*100) +'% 0 0)'});
 
