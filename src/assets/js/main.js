@@ -7,8 +7,11 @@ var Ui = require('./UI');
 
 var Terrain = require('./Terrain');
 var Sounds = require('./Sounds');
+var Animal = require('./Models/animal.js');
 var Fish = require('./Models/fish.js');
 var Rockbass = require('./Models/rockbass.js');
+var Jellyfish = require('./Models/jellyfish.js');
+var Catfish = require('./Models/catfish.js');
 var Particles = require('./Models/particles.js');
 var Lights = require('./Models/lights.js');
 var Lantern = require('./Models/lantern.js');
@@ -30,8 +33,7 @@ var App = {
         this.camera = Camera.create();
         this.listener = Listener.create(this.camera);
         this.renderer = Renderer.create();
-        this.fishes = [];
-        this.rockbasses = [];
+        this.animals = [];
         this.progressStatus = [];
         Ui.createTarget(this.camera);
 
@@ -46,7 +48,7 @@ var App = {
 
         return this;
     },
-    
+
     initElements: function() {
         dbg('initialize elements');
         this.$els = {
@@ -56,7 +58,7 @@ var App = {
             window: window
         };
     },
-    
+
     initEvents: function() {
         dbg('initialize events');
         this.$els.toggleFullScreenBtn.addEventListener('click', this.toggleFullScreen.bind(this));
@@ -80,6 +82,8 @@ var App = {
         dbg('load assets');
         Fish.loadAssets(this.createFishes.bind(this), this.assetsLoadingProgress.bind(this));
         Rockbass.loadAssets(this.createRockbass.bind(this), this.assetsLoadingProgress.bind(this));
+        Catfish.loadAssets(this.createCatfish.bind(this), this.assetsLoadingProgress.bind(this));
+        Jellyfish.loadAssets(this.createJellyfish.bind(this), this.assetsLoadingProgress.bind(this));
     },
 
     assetsLoadingProgress: function(progress) {
@@ -120,14 +124,28 @@ var App = {
     createFishes: function() {
         for(var i = 0 ; i < fishList.length; i++) {
             var fishName = fishList[i].name + ' the fish';
-            this.fishes.push(Fish.create(this.scene, this.listener, fishName));
+            this.animals.push(Fish.create(this.scene, this.listener, fishName));
         }
     },
 
     createRockbass: function() {
         for(var i = 0 ; i < fishList.length; i++) {
             var fishName = fishList[i].name + ' the rockbass';
-            this.rockbasses.push(Rockbass.create(this.scene, this.listener, fishName));
+            this.animals.push(Rockbass.create(this.scene, this.listener, fishName));
+        }
+    },
+
+    createCatfish: function() {
+        for(var i = 0 ; i < fishList.length; i++) {
+            var fishName = fishList[i].name + ' the catfish';
+            this.animals.push(Catfish.create(this.scene, this.listener, fishName));
+        }
+    },
+
+    createJellyfish: function() {
+        for(var i = 0 ; i < fishList.length; i++) {
+            var fishName = fishList[i].name + ' the jellyfish';
+            this.animals.push(Jellyfish.create(this.scene, this.listener, fishName));
         }
     },
 
@@ -142,7 +160,7 @@ var App = {
             this.rotationControls = Controls.createMouse(this.camera, this.renderer);
         }
     },
-    
+
     render: function() {
         var delta = 0.75 * this.clock.getDelta();
 
@@ -155,8 +173,7 @@ var App = {
 
         this.renderer.render(this.scene, this.camera);
 
-        Fish.update(this.fishes, delta);
-        Rockbass.update(this.rockbasses, delta);
+        Animal.update(this.animals, delta);
         this.gauge.update();
     }
 };
