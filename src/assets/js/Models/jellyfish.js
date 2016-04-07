@@ -1,15 +1,13 @@
-var dbg = require('debug')('luma:rockbass');
+var dbg = require('debug')('luma:jellyfish');
 var Animal = require('./animal.js');
 
-var Rockbass = _.assign({
-  type: 'rockbass',
+var Jellyfish = _.assign({
+  type: 'jellyfish',
 
   create: function(scene, listener) {
     this.mesh = this.asset.clone();
     this.setName(this.type);
-    dbg('create rockbass ' + this.name);
-
-    this.mesh.animations = this.asset.animations;
+    dbg('create jellyfish ' + this.name );
 
     this.initPosition();
 
@@ -18,32 +16,29 @@ var Rockbass = _.assign({
     this.goForward();
 
     this.initCollider();
-    this.initAnimation(this.mesh);
-    this.initAudio('assets/sounds/fish_noise.mp3', listener);
+    //this.initAnimation(this.mesh);
+    //this.initAudio('assets/sounds/fish_noise.mp3', listener);
 
     return this;
   },
 
   loadAssets: function(successCb, progressCb) {
-    dbg('Load rockbass assets');
+    dbg('Load jellyfish assets');
     var _self = this;
     var loader = new THREE.JSONLoader();
-    loader.load('assets/js/Models/skinned/rockbass.json', function(geometry, materials) {
+    loader.load('assets/js/Models/skinned/jellyfish.json', function(geometry, materials) {
       _self.assetsLoaded(geometry, materials, successCb);
     }, function(event) {
       _self.assetsLoading(event, progressCb);
     }, function() {
-      dbg('Error: load rockbass assets');
+      dbg('Error: load jellyfish assets');
     });
   },
 
   assetsLoaded: function(geometry, materials, cb) {
-    dbg('rockbass assets loaded');
-    materials.forEach( function (material) {
-      material.skinning = true;
-    } );
+    dbg('jellyfish assets loaded');
 
-    var mesh = new THREE.SkinnedMesh( geometry, materials[0] );
+    var mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial({color: 0x431655, transparent: true, opacity: 0.35}) );
     mesh.scale.set( 2, 2, 2 );
     this.asset = mesh;
     cb();
@@ -57,4 +52,4 @@ var Rockbass = _.assign({
   }
 }, Animal);
 
-module.exports = Rockbass;
+module.exports = Jellyfish;
