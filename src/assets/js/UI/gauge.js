@@ -28,6 +28,7 @@ var Gauge = {
       this.UI.loadFont(function() {
         this.createText(this.UI);
       }.bind(this));
+      return;
     }
 
     this.locationText = new THREE.Mesh(new THREE.TextGeometry("", {font: this.UI.font, size: 0.05, height: 0.01}), new THREE.MeshBasicMaterial( { color: 0xff0000 }));
@@ -39,8 +40,10 @@ var Gauge = {
   update: function () {
     this.value = Math.round(this.camera.position.y) - this.max;
     this.location.position.setY(this.value/this.max * 2 + 2);
-    this.locationText.geometry = new THREE.TextGeometry(this.value + "m", {font: this.UI.font, size: 0.05, height: 0.01});
-    //this.locationText.computeBoundingBox();
+    if(this.locationText){
+      this.locationText.geometry = new THREE.TextGeometry(this.value + "m", {font: this.UI.font, size: 0.05, height: 0.01});
+      //this.locationText.computeBoundingBox();
+    }
   }
 
 };
