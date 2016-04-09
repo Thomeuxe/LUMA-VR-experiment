@@ -26,9 +26,10 @@ var Animal = {
       Math.random() * -100);
   },
 
-  initCollider: function (that) {
+  initCollider: function (that, optionalScaleFactor) {
+    optionalScaleFactor = optionalScaleFactor || 1;
     var box = new THREE.Box3().setFromObject(that.mesh);
-    var geometryCollider = new THREE.SphereGeometry(box.getBoundingSphere().radius, 6, 6);
+    var geometryCollider = new THREE.SphereGeometry(box.getBoundingSphere().radius * optionalScaleFactor, 6, 6);
     that.meshCollider = new THREE.Mesh(geometryCollider, new THREE.MeshBasicMaterial({wireframe: true, transparent: true, opacity: 0.1}));
     that.mesh.add(that.meshCollider);
 

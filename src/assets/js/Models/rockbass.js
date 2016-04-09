@@ -43,7 +43,6 @@ var Rockbass = _.assign({
     } );
 
     var mesh = new THREE.SkinnedMesh( geometry, materials[0] );
-    mesh.scale.set( 2, 2, 2 );
     this.asset = mesh;
     cb();
   },

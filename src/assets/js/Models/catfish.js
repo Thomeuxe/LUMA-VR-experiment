@@ -43,7 +43,6 @@ var Catfish = _.assign({
     } );
 
     var mesh = new THREE.SkinnedMesh( geometry, materials[0] );
-    mesh.scale.set( 4, 4, 4 );
     this.asset = mesh;
     cb();
   },

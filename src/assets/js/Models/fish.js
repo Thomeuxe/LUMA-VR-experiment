@@ -18,7 +18,7 @@ var Fish = _.assign({
 
     this.goForward(that);
 
-    this.initCollider(that);
+    this.initCollider(that, 0.1);
     this.initAnimation(that);
     this.initAudio(that, 'assets/sounds/fish_noise.mp3', listener);
 
