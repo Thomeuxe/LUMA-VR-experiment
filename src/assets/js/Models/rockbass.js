@@ -23,19 +23,6 @@ var Rockbass = _.assign({
     return that;
   },
 
-  loadAssets: function(successCb, progressCb) {
-    dbg('Load rockbass assets');
-    var _self = this;
-    var loader = new THREE.JSONLoader();
-    loader.load('assets/js/Models/skinned/rockbass.json', function(geometry, materials) {
-      _self.assetsLoaded(geometry, materials, successCb);
-    }, function(event) {
-      _self.assetsLoading(event, progressCb);
-    }, function() {
-      dbg('Error: load rockbass assets');
-    });
-  },
-
   assetsLoaded: function(geometry, materials, cb) {
     dbg('rockbass assets loaded');
     materials.forEach( function (material) {

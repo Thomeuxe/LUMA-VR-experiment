@@ -1,3 +1,5 @@
+var dbg = require('debug')('luma:animal');
+
 var Animal = {
 
   assetsLoading: function(event, progressCb) {
@@ -5,6 +7,34 @@ var Animal = {
       key: this.type + 'Json',
       value: event.loaded / event.total
     })
+  },
+
+  loadObjectAssets: function (url, successCb, progressCb) {
+    var filename = url.substring(url.lastIndexOf('/')+1);
+    dbg('Load ' + filename + ' assets');
+    var _self = this;
+    var loader = new THREE.ObjectLoader();
+    loader.load(url, function (asset) {
+      _self.assetsLoaded(asset, successCb);
+    }, function (event) {
+      _self.assetsLoading(event, progressCb)
+    }, function () {
+      dbg('Error: load ' + filename + ' assets');
+    });
+  },
+
+  loadJSONAssets: function(url, successCb, progressCb) {
+    var filename = url.substring(url.lastIndexOf('/')+1);
+    dbg('Load ' + filename + ' assets');
+    var _self = this;
+    var loader = new THREE.JSONLoader();
+    loader.load(url, function(geometry, materials) {
+      _self.assetsLoaded(geometry, materials, successCb);
+    }, function(event) {
+      _self.assetsLoading(event, progressCb);
+    }, function() {
+      dbg('Error: load ' + filename + ' assets');
+    });
   },
 
   update: function(instances, delta) {

@@ -88,10 +88,10 @@ var App = {
     initAssets: function() {
         dbg('load assets');
         Terrain.loadAssets(this.createTerrain.bind(this), this.assetsLoadingProgress.bind(this));
-        Fish.loadAssets(this.createFishes.bind(this), this.assetsLoadingProgress.bind(this));
-        Rockbass.loadAssets(this.createRockbass.bind(this), this.assetsLoadingProgress.bind(this));
-        Catfish.loadAssets(this.createCatfish.bind(this), this.assetsLoadingProgress.bind(this));
-        Jellyfish.loadAssets(this.createJellyfish.bind(this), this.assetsLoadingProgress.bind(this));
+        Fish.loadObjectAssets('assets/js/Models/skinned/fish.json', this.createFishes.bind(this), this.assetsLoadingProgress.bind(this));
+        Rockbass.loadJSONAssets('assets/js/Models/skinned/rockbass.json', this.createRockbass.bind(this), this.assetsLoadingProgress.bind(this));
+        Catfish.loadJSONAssets('assets/js/Models/skinned/catfish.json', this.createCatfish.bind(this), this.assetsLoadingProgress.bind(this));
+        Jellyfish.loadJSONAssets('assets/js/Models/skinned/jellyfish.json', this.createJellyfish.bind(this), this.assetsLoadingProgress.bind(this));
     },
 
     assetsLoadingProgress: function(progress) {

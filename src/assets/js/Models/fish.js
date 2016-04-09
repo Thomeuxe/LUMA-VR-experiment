@@ -25,19 +25,6 @@ var Fish = _.assign({
     return that;
   },
 
-  loadAssets: function (successCb, progressCb) {
-    dbg('Load fish assets');
-    var _self = this;
-    var loader = new THREE.ObjectLoader();
-    loader.load('assets/js/Models/skinned/fish.json', function (asset) {
-      _self.assetsLoaded(asset, successCb);
-    }, function (event) {
-      _self.assetsLoading(event, progressCb)
-    }, function () {
-      dbg('Error: load fish assets');
-    });
-  },
-
   assetsLoaded: function (asset, cb) {
     dbg('fish assets loaded');
     this.asset = asset.children[0].children[0];
