@@ -16,8 +16,8 @@ var Jellyfish = _.assign({
 
     this.goForward(that);
 
-    this.initCollider(that, 0.3);
-    //this.initAnimation(that);
+    this.initCollider(that, 0.8);
+    this.initAnimation(that);
     //this.initAudio(that, 'assets/sounds/fish_noise.mp3', listener);
 
     return that;
@@ -40,16 +40,12 @@ var Jellyfish = _.assign({
     dbg('jellyfish assets loaded');
 
     var mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial({color: 0x431655, transparent: true, opacity: 0.35}) );
-    mesh.scale.set( 2, 2, 2 );
     this.asset = mesh;
     cb();
   },
 
   initAnimation: function (that) {
-    that.mixer = new THREE.AnimationMixer(that.mesh);
-
-    that.action = this.mixer.clipAction( that.mesh.geometry.animations[ 0 ] );
-    that.action.play();
+    TweenMax.to(that.mesh.scale, 1, {x: 0.75, y: 0.75, ease: Power4.easeInOut, yoyo: true, repeat: -1});
   }
 }, Animal);
 
