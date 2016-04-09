@@ -10,8 +10,6 @@ var Catfish = _.assign({
     this.setName(that, this.type);
     dbg('create catfish ' + that.name);
 
-    that.mesh.animations = this.asset.animations;
-
     this.initPosition(that);
 
     this.goForward(that);

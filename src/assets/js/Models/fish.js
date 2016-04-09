@@ -10,7 +10,7 @@ var Fish = _.assign({
     this.setName(that, this.type);
     dbg('create fish ' + that.name);
 
-    that.mesh.animations = this.asset.animations;
+    that.mesh.geometry.animations = this.asset.geometry.animations;
 
     this.initPosition(that);
 
@@ -40,14 +40,14 @@ var Fish = _.assign({
 
   assetsLoaded: function (asset, cb) {
     dbg('fish assets loaded');
-    this.asset = asset;
+    this.asset = asset.children[0].children[0];
     cb();
   },
 
   initAnimation: function (that) {
     that.mixer = new THREE.AnimationMixer(that.mesh);
 
-    that.action = that.mixer.clipAction(that.mesh.animations[0]);
+    that.action = that.mixer.clipAction(that.mesh.geometry.animations[0]);
     that.action.play();
   }
 }, Animal);

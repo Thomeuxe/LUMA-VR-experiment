@@ -10,8 +10,6 @@ var Rockbass = _.assign({
     this.setName(that, this.type);
     dbg('create rockbass ' + that.name);
 
-    that.mesh.animations = this.asset.animations;
-
     this.initPosition(that);
 
     scene.add(that.mesh);
