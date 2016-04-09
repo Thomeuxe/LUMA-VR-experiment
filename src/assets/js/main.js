@@ -52,7 +52,8 @@ var App = {
     initElements: function() {
         dbg('initialize elements');
         this.$els = {
-            toggleFullScreenBtn: document.getElementById('playBtn'),
+            onboarding: document.getElementById('onboarding'),
+            playBtn: document.getElementById('playBtn'),
             toggleAudioBtn: document.getElementById('toggleAudioBtn'),
             wrapper: document.getElementById('wrapper'),
             window: window
@@ -61,20 +62,41 @@ var App = {
 
     initEvents: function() {
         dbg('initialize events');
-        this.$els.toggleFullScreenBtn.addEventListener('click', this.toggleFullScreen.bind(this));
+
+        // Listen for fullscreen change events
+        document.addEventListener('webkitfullscreenchange', this.onFullScreenChange.bind(this), false);
+        document.addEventListener('mozfullscreenchange', this.onFullScreenChange.bind(this), false);
+        document.addEventListener('fullscreenchange', this.onFullScreenChange.bind(this), false);
+        document.addEventListener('MSFullscreenChange', this.onFullScreenChange.bind(this), false);
+
+        this.$els.playBtn.addEventListener('click', this.play.bind(this));
         this.$els.toggleAudioBtn.addEventListener('click', this.toggleAudio.bind(this));
         this.$els.window.addEventListener('resize', this.onWindowResize.bind(this), false );
     },
 
-    toggleFullScreen: function() {
-        Ui.toggleFullScreen(this.$els.wrapper,  Supports);
+    play: function () {
+        this.toggleFullScreen();
 
         if(!this.isPlaying) {
             this.createUI();
             Sounds.initVoiceSynthesis();
             this.isPlaying = true;
         }
+    },
 
+    onFullScreenChange: function () {
+        document.isFullScreen = document.fullscreenElement || document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement;
+        if (document.isFullScreen) {
+            this.$els.onboarding.style.display = 'none';
+            this.showUI();
+        } else {
+            this.$els.onboarding.style.display = 'initial';
+            this.hideUI();
+        }
+    },
+
+    toggleFullScreen: function() {
+        Ui.toggleFullScreen(this.$els.wrapper,  Supports);
     },
 
     toggleAudio: function() {
@@ -133,7 +155,21 @@ var App = {
 
     createUI: function() {
         this.gauge = Gauge.create(this.camera, Ui);
-        Ui.createTarget(this.camera);
+        this.target = Ui.createTarget(this.camera);
+    },
+
+    showUI: function () {
+        this.gauge.location.visible = true;
+        this.gauge.locationText.visible = true;
+        this.gauge.marker.visible = true;
+        this.target.visible = true;
+    },
+
+    hideUI: function () {
+        this.gauge.location.visible = false;
+        this.gauge.locationText.visible = false;
+        this.gauge.marker.visible = false;
+        this.target.visible = false;
     },
 
     createFishes: function() {
