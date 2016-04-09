@@ -55,9 +55,7 @@ var Animal = {
   },
 
   goForward: function (that) {
-    var speed = Math.random();
-    that.speed = 0;
-    TweenMax.to(that, 1, {speed: - speed, repeat: -1});
+    that.speed = Math.random() + 0.5;
   }
 };
 
