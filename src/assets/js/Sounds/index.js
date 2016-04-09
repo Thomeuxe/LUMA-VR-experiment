@@ -52,7 +52,7 @@ var Sounds = {
   update: function() {
     if(!window.speechSynthesis.talking) {
       var depth = Math.round(this.camera.position.y) - this.max;
-      if (this.depthArray.indexOf(depth) != -1) {
+      if (this.depthArray && this.depthArray.indexOf(depth) != -1) {
 
         this.speech.text = _.find(this.depthData, function (o) {
           return o.depth == depth;
