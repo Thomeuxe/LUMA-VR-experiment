@@ -4,22 +4,23 @@ var Animal = require('./animal.js');
 var Jellyfish = _.assign({
   type: 'jellyfish',
 
-  create: function(scene, listener) {
-    this.mesh = this.asset.clone();
-    this.setName(this.type);
-    dbg('create jellyfish ' + this.name );
+  create: function(scene, listener, i) {
+    var that = {};
+    that.mesh = this.asset.clone();
+    this.setName(that, this.type);
+    dbg('create jellyfish ' + that.name );
 
-    this.initPosition();
+    this.initPosition(that);
 
-    scene.add(this.mesh);
+    scene.add(that.mesh);
 
-    this.goForward();
+    this.goForward(that);
 
-    this.initCollider();
-    //this.initAnimation(this.mesh);
-    //this.initAudio('assets/sounds/fish_noise.mp3', listener);
+    this.initCollider(that);
+    //this.initAnimation(that);
+    //this.initAudio(that, 'assets/sounds/fish_noise.mp3', listener);
 
-    return this;
+    return that;
   },
 
   loadAssets: function(successCb, progressCb) {
@@ -44,11 +45,11 @@ var Jellyfish = _.assign({
     cb();
   },
 
-  initAnimation: function (object) {
-    this.mixer = new THREE.AnimationMixer(this.mesh);
+  initAnimation: function (that) {
+    that.mixer = new THREE.AnimationMixer(that.mesh);
 
-    this.action = this.mixer.clipAction( object.geometry.animations[ 0 ] );
-    this.action.play();
+    that.action = this.mixer.clipAction( that.mesh.geometry.animations[ 0 ] );
+    that.action.play();
   }
 }, Animal);
 
