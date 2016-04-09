@@ -49,6 +49,7 @@ var Rockbass = _.assign({
 
   initAnimation: function (that) {
     that.mixer = new THREE.AnimationMixer(that.mesh);
+    that.mixer.timeScale = 3;
 
     that.action = that.mixer.clipAction( that.mesh.geometry.animations[ 0 ] );
     that.action.play();
