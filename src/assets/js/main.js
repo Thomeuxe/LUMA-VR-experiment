@@ -77,10 +77,10 @@ var App = {
     play: function () {
         this.toggleFullScreen();
 
-        if(!this.isPlaying) {
+        if(!this.UICreated) {
             this.createUI();
             Sounds.initVoiceSynthesis();
-            this.isPlaying = true;
+            this.UICreated = true;
         }
     },
 
@@ -89,9 +89,11 @@ var App = {
         if (document.isFullScreen) {
             this.$els.onboarding.style.display = 'none';
             this.showUI();
+            this.isPlaying = true;
         } else {
             this.$els.onboarding.style.display = 'initial';
             this.hideUI();
+            this.isPlaying = false;
         }
     },
 
@@ -217,7 +219,6 @@ var App = {
 
         if(this.isPlaying) {
             this.rotationControls.update();
-            //touchControls.update();
             if (this.raycaster) this.raycaster.update();
         }
         Camera.render();
