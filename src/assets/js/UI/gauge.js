@@ -6,7 +6,7 @@ var Gauge = {
     this.UI = UI;
 
     this.camera = camera;
-    
+
     var texture = new THREE.TextureLoader().load('assets/img/graduation.png');
     this.marker = new THREE.Mesh(new THREE.BoxGeometry(0.78, 2, 0), new THREE.MeshBasicMaterial( { map: texture, transparent: true, color: 0xffffff }));
     this.marker.position.set(-0.6,0,-1.8);
@@ -40,7 +40,7 @@ var Gauge = {
 
   update: function () {
     this.value = Math.round(this.camera.position.y) - this.max;
-    this.location.position.setY(this.value/this.max * 2 + 2);
+    this.location.position.setY(this.value/this.max * 2 + 1.25);
     if(this.locationText){
       this.locationText.geometry = new THREE.TextGeometry(this.value + "m", {font: this.UI.font, size: 0.05, height: 0.01});
       //this.locationText.computeBoundingBox();
