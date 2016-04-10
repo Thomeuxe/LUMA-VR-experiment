@@ -4,13 +4,13 @@ var Animal = require('./animal.js');
 var Catfish = _.assign({
   type: 'catfish',
 
-  create: function(scene, listener) {
+  create: function(scene, listener, camera) {
     var that = {};
     that.mesh = this.asset.clone();
     this.setName(that, this.type);
     dbg('create catfish ' + that.name);
 
-    this.initPosition(that);
+    this.setPosition(that, camera);
     that.translateAxis = new THREE.Vector3(0, 0, 1);
 
     this.goForward(that);

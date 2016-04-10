@@ -4,13 +4,13 @@ var Animal = require('./animal.js');
 var Rockbass = _.assign({
   type: 'rockbass',
 
-  create: function(scene, listener, i) {
+  create: function(scene, listener, camera) {
     var that = {};
     that.mesh = this.asset.clone();
     this.setName(that, this.type);
     dbg('create rockbass ' + that.name);
 
-    this.initPosition(that);
+    this.setPosition(that, camera);
     that.mesh.rotateOnAxis(new THREE.Vector3(1, 0, 0), 1);
     that.translateAxis = new THREE.Vector3(0, 1, 0);
 

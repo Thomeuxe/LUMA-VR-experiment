@@ -4,7 +4,7 @@ var Animal = require('./animal.js');
 var Fish = _.assign({
   type: 'fish',
 
-  create: function (scene, listener) {
+  create: function (scene, listener, camera) {
     var that = {};
     that.mesh = this.asset.clone();
     this.setName(that, this.type);
@@ -12,7 +12,7 @@ var Fish = _.assign({
 
     that.mesh.geometry.animations = this.asset.geometry.animations;
 
-    this.initPosition(that);
+    this.setPosition(that, camera);
     that.mesh.rotateOnAxis(new THREE.Vector3(1, 0, 0), -1);
     that.translateAxis = new THREE.Vector3(0, -1, 0);
 

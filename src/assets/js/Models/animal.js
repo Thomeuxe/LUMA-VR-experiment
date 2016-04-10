@@ -37,20 +37,28 @@ var Animal = {
     });
   },
 
-  update: function(instances, delta) {
+  update: function(instances, delta, camera) {
+    var cameraDistance;
+    var self = this;
     instances.forEach(function (instance) {
+      cameraDistance = instance.mesh.position.distanceTo( camera.position );
+      if (cameraDistance > 500){
+        self.setPosition(instance, camera);
+      }
+
       instance.mesh.translateOnAxis(instance.translateAxis, instance.speed);
+
       if (instance.mixer) {
         instance.mixer.update(delta);
       }
     });
   },
 
-  initPosition: function (that) {
+  setPosition: function (that, camera) {
     that.mesh.position.set(
-      Math.random() * 1000 - 500,
-      Math.random() * 1000 - 500,
-      Math.random() * -100);
+      (Math.random() < 0.5 ? -1 : +1 ) * Math.random() * 500 + camera.position.x,
+      camera.position.y,
+      (Math.random() < 0.5 ? -1 : +1 ) * Math.random() * 500 + camera.position.z);
   },
 
   initCollider: function (that, optionalScaleFactor) {
