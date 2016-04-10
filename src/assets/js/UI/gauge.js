@@ -6,8 +6,9 @@ var Gauge = {
     this.UI = UI;
 
     this.camera = camera;
-
-    this.marker = new THREE.Mesh(new THREE.BoxGeometry(0.78, 2, 0), new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'assets/img/graduation.png' ), transparent: true, color: 0xffffff }));
+    
+    var texture = new THREE.TextureLoader().load('assets/img/graduation.png');
+    this.marker = new THREE.Mesh(new THREE.BoxGeometry(0.78, 2, 0), new THREE.MeshBasicMaterial( { map: texture, transparent: true, color: 0xffffff }));
     this.marker.position.set(-0.6,0,-1.8);
 
 
