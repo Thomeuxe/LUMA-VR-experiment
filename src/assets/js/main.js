@@ -19,7 +19,6 @@ var Gauge = require('./UI/gauge.js');
 var Controls = require('./Controls');
 var Raycaster = require('./Controls/raycaster.js');
 
-var fishList = require('./fishList');
 var dbg = require('debug')('luma:app');
 
 // Enable debug
@@ -30,6 +29,7 @@ var App = {
     init:function() {
         dbg('init');
         this.isPlaying = false;
+        this.animalQuantity = 3;
         this.scene = Scene.create();
         this.camera = Camera.create();
         this.listener = Listener.create(this.camera);
@@ -175,26 +175,26 @@ var App = {
     },
 
     createFishes: function() {
-        for(var i = 0 ; i < fishList.length; i++) {
-            this.animals.push(Fish.create(this.scene, this.listener));
+        for(var i = 0 ; i < this.animalQuantity; i++) {
+            this.animals.push(Fish.create(this.scene, this.listener, this.camera));
         }
     },
 
     createRockbass: function() {
-        for(var i = 0 ; i < fishList.length; i++) {
-            this.animals.push(Rockbass.create(this.scene, this.listener));
+        for(var i = 0 ; i < this.animalQuantity; i++) {
+            this.animals.push(Rockbass.create(this.scene, this.listener, this.camera));
         }
     },
 
     createCatfish: function() {
-        for(var i = 0 ; i < fishList.length; i++) {
-            this.animals.push(Catfish.create(this.scene, this.listener));
+        for(var i = 0 ; i < this.animalQuantity; i++) {
+            this.animals.push(Catfish.create(this.scene, this.listener, this.camera));
         }
     },
 
     createJellyfish: function() {
-        for(var i = 0 ; i < fishList.length; i++) {
-            this.animals.push(Jellyfish.create(this.scene, this.listener));
+        for(var i = 0 ; i < this.animalQuantity; i++) {
+            this.animals.push(Jellyfish.create(this.scene, this.listener, this.camera));
         }
     },
 
@@ -224,7 +224,7 @@ var App = {
 
         this.renderer.render(this.scene, this.camera);
 
-        Animal.update(this.animals, delta);
+        Animal.update(this.animals, delta, this.camera);
 
         if(this.isPlaying) {
             this.gauge.update();
