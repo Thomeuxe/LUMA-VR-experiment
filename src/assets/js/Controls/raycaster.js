@@ -13,6 +13,8 @@ Raycaster = {
     intersections: [],
     terrain: null,
 
+    lastTerrainTile: null,
+
     create: function(scene, camera, UI, terrain) {
         this.targetRaycaster = new THREE.Raycaster();
         this.center = new THREE.Vector2(0, 0);
@@ -25,6 +27,8 @@ Raycaster = {
         this.UI = UI;
         this.terrain = terrain;
 
+        this.lastTerrainTile = this.terrain.currentTile;
+
         return this;
     },
 
@@ -35,7 +39,7 @@ Raycaster = {
         // calculate objects intersecting the picking ray
         var intersects = this.targetRaycaster.intersectObjects(this.scene.children, true);
 
-        var collisions = this.collisionRaycaster.intersectObject(this.terrain);
+        var collisions = this.collisionRaycaster.intersectObjects(this.terrain.meshs);
 
         var i;
 
@@ -55,7 +59,14 @@ Raycaster = {
                 this.UI.closeInfoPanel();
             }
         }
-        
+
+        if (collisions.length > 1) console.warn("COLLISIONS > 1");
+
+        if (collisions.length > 0 && this.lastTerrainTile.mesh.uuid != collisions[0].object.uuid) {
+            this.lastTerrainTile = collisions[0].object.terrainTile;
+            this.terrain.setCurrentTile(this.lastTerrainTile);
+        }
+
         if (collisions.length > 0 && collisions[0].distance < 60) {
             this.camera.position.set(
                 this.camera.position.x,
