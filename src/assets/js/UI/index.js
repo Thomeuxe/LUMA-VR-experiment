@@ -46,7 +46,15 @@ var UI = {
         // Exit if there's no parent to target or if panel is already visible
         if(!parent || (this.infoPanel && this.infoPanel.visible)) return;
 
-        var fontSize = intersects[1].distance * 0.06;
+        var intersect;
+        for (var i = 0; i < intersects.length; i++) {
+            if (intersects[i].object.targetable) {
+                intersect = intersects[i];
+                break;
+            }
+        }
+
+        var fontSize = intersect.distance * 0.06;
 
         if (!this.infoPanel) {
             dbg('open info panel');
