@@ -23,19 +23,6 @@ var Catfish = _.assign({
     return that;
   },
 
-  loadAssets: function(successCb, progressCb) {
-    dbg('Load catfish assets');
-    var _self = this;
-    var loader = new THREE.JSONLoader();
-    loader.load('assets/js/Models/skinned/catfish.json', function(geometry, materials) {
-      _self.assetsLoaded(geometry, materials, successCb);
-    }, function(event) {
-      _self.assetsLoading(event, progressCb);
-    }, function() {
-      dbg('Error: load catfish assets');
-    });
-  },
-
   assetsLoaded: function(geometry, materials, cb) {
     dbg('catfish assets loaded');
     materials.forEach( function (material) {
