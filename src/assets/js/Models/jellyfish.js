@@ -11,6 +11,7 @@ var Jellyfish = _.assign({
     dbg('create jellyfish ' + that.name );
 
     this.initPosition(that);
+    that.translateAxis = new THREE.Vector3(0, 1, 0);
 
     scene.add(that.mesh);
 

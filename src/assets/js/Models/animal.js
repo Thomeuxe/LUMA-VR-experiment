@@ -39,7 +39,7 @@ var Animal = {
 
   update: function(instances, delta) {
     instances.forEach(function (instance) {
-      instance.mesh.translateZ(instance.speed);
+      instance.mesh.translateOnAxis(instance.translateAxis, instance.speed);
       if (instance.mixer) {
         instance.mixer.update(delta);
       }
@@ -47,9 +47,6 @@ var Animal = {
   },
 
   initPosition: function (that) {
-    that.mesh.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI / (Math.random() * 180 ));
-    that.mesh.rotateOnAxis(new THREE.Vector3(0, 0, 1), Math.PI / (Math.random() * 180 ));
-
     that.mesh.position.set(
       Math.random() * 1000 - 500,
       Math.random() * 1000 - 500,

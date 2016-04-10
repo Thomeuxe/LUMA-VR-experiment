@@ -11,6 +11,8 @@ var Rockbass = _.assign({
     dbg('create rockbass ' + that.name);
 
     this.initPosition(that);
+    that.mesh.rotateOnAxis(new THREE.Vector3(1, 0, 0), 1);
+    that.translateAxis = new THREE.Vector3(0, 1, 0);
 
     scene.add(that.mesh);
 

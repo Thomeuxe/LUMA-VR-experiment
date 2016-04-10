@@ -11,6 +11,7 @@ var Catfish = _.assign({
     dbg('create catfish ' + that.name);
 
     this.initPosition(that);
+    that.translateAxis = new THREE.Vector3(0, 0, 1);
 
     this.goForward(that);
 

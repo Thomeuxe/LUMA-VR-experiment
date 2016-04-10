@@ -13,6 +13,8 @@ var Fish = _.assign({
     that.mesh.geometry.animations = this.asset.geometry.animations;
 
     this.initPosition(that);
+    that.mesh.rotateOnAxis(new THREE.Vector3(1, 0, 0), -1);
+    that.translateAxis = new THREE.Vector3(0, -1, 0);
 
     scene.add(that.mesh);
 
