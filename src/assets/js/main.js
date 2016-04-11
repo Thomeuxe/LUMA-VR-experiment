@@ -103,11 +103,12 @@ var App = {
         if (document.isFullScreen) {
             this.$els.onboarding.style.display = 'none';
             this.showUI();
-            this.isPlaying = true;
+            this.isPlaying = Controls.active = true;
         } else {
             this.$els.onboarding.style.display = 'initial';
             this.hideUI();
-            this.isPlaying = false;
+            this.isPlaying = Controls.active = false;
+            Controls.stop(true);
         }
     },
 
@@ -150,8 +151,10 @@ var App = {
             if (Supports.isMobile()){
                 TweenMax.to(".onboarding__mobile-buttons", 1, {opacity: 1, scale: 1, ease: Power4.easeInOut});
             } else {
-                TweenMax.to("#playBtn", 1, {opacity: 1, scale: 1, ease: Power4.easeInOut});   
+                TweenMax.to("#playBtn", 1, {opacity: 1, scale: 1, ease: Power4.easeInOut});
+
             }
+            TweenMax.to("#waitingBackground", 1.5, {opacity: 0, ease: Power4.easeInOut});
         }
 
         dbg('Global asset loading progress', percentage);
@@ -228,12 +231,12 @@ var App = {
 
     getDevice: function() {
         dbg('get device');
-        touchControls = Controls.initTouchMovements(this.camera);
+        touchControls = Controls.initTouchMovements();
 
         if(Supports.isMobile()) {
             this.rotationControls = Controls.create(this.camera);
         } else {
-            this.rotationControls = Controls.createMouse(this.camera, this.renderer);
+            this.rotationControls = Controls.createMouse(this.camera);
         }
     },
 
@@ -263,4 +266,3 @@ var App = {
 
 var app = App.init();
 app.render();
-window.app = app;

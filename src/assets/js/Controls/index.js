@@ -1,11 +1,13 @@
 var Controls = {
+    active: false,
+
     create: function (camera) {
         this.camera = camera;
         this.camera.tmpRotation = 0;
         return new THREE.DeviceOrientationControls(camera);
     },
 
-    createMouse: function (camera, renderer) {
+    createMouse: function (camera) {
         var elem = document.getElementById('wrapper');
         this.camera = camera;
 
@@ -24,11 +26,11 @@ var Controls = {
         }.bind(this), false);
 
         window.addEventListener('mousedown', function () {
-            this.goForward(this.camera);
+            this.goForward();
         }.bind(this), false);
 
         window.addEventListener('mouseup', function () {
-            this.stop(this.camera);
+            this.stop();
         }.bind(this), false);
 
         this.camera.tmpRotation = 0;
@@ -44,30 +46,34 @@ var Controls = {
         this.movementX = 0;
     },
 
-    initTouchMovements: function (camera) {
+    initTouchMovements: function () {
         /*controls = new THREE.VRControls( camera );
          controls.movementSpeed = 150;
          controls.lookSpeed = 0.1;
          return controls;*/
 
         window.addEventListener('touchstart', function () {
-            this.goForward(this.camera);
+            this.goForward();
         }.bind(this), false);
 
         window.addEventListener('touchend', function () {
-            this.stop(this.camera);
+            this.stop();
         }.bind(this), false);
     },
 
-    goForward: function (camera) {
-        TweenMax.to(this.camera, 1, {acceleration: -6, ease: Quad.easeIn});
+    goForward: function () {
+        console.log(this);
+        if (this.active)
+            TweenMax.to(this.camera, 1, {acceleration: -6, ease: Quad.easeIn});
     },
 
-    stop: function (camera) {
-        if(null!= this.camera.tmpRotation)
+    stop: function (immediately) {
+        var duration = immediately ? 0.1 : 2;
+
+        if(null != this.camera.tmpRotation)
             TweenMax.to(this.camera, 3, {tmpRotation: 0, ease: Quad.easeInOut, delay: 0.5});
 
-        TweenMax.to(this.camera, 2, {acceleration: 0, ease: Quad.easeOut});
+        TweenMax.to(this.camera, duration, {acceleration: 0, ease: Quad.easeOut});
     }
 };
 
