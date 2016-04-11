@@ -6,14 +6,14 @@ var Terrain = {
     texturePath: "./assets/img/topography.jpg",
     color: 0x006994,
 
-    // terrain width
-    width: 512,
-    // terrain quality (vertices = width * quality)
-    quality: 0.3,
+    // terrain tile width
+    width: 320,
+    // terrain quality (between 0.01 and 1), impact number of vertices
+    quality: 0.15,
     // terrain maximum height
-    maxHeight: 255,
+    maxHeight: 100,
     // heightmap blur factor
-    softness: 10,
+    softness: 5,
     // if true, recalculate heightmap imageData to fit between 0 and 255
     normalize: true,
 
@@ -311,8 +311,6 @@ var TerrainTile = function(data, position) {
 
             self.mesh.position.setX(this.x * Terrain.width);
             self.mesh.position.setZ(this.z * Terrain.width);
-
-            console.log("pos", x, z, self.mesh.position.x, self.mesh.position.z);
         }
     };
 
@@ -345,7 +343,7 @@ TerrainTile.prototype.createGeometry = function(data) {
         this.geometry.attributes.position.array[i + 1] = data[j] * h;
     }
 
-    console.log(this.geometry.attributes.position.array);
+    dbg('Tile vertices: ' + this.geometry.attributes.position.array.length / 3);
 
     return this.geometry;
 };
