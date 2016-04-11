@@ -46,7 +46,7 @@ var UI = {
         // Exit if there's no parent to target or if panel is already visible
         if(!parent || (this.infoPanel && this.infoPanel.visible)) return;
 
-        var fontSize = parent.distance * 0.06;
+        var fontSize = 0.06 * parent.distance;
 
         if (!this.infoPanel) {
             dbg('open info panel');
@@ -57,6 +57,7 @@ var UI = {
             this.infoPanel.remove( this.infoName );
             this.infoName = this.createInfoName(parent.object.parent.name, fontSize);
         }
+        this.infoName.userData.originalDistance = parent.distance;
 
         this.infoPanel.add(this.infoName);
     
@@ -83,11 +84,14 @@ var UI = {
         if(!parent || (this.infoPanel && !this.infoPanel.visible)) return;
 
         var vector = new THREE.Vector3();
-        vector.setFromMatrixPosition( parent.object.matrixWorld );
-    
+        vector.setFromMatrixPosition(parent.object.matrixWorld);
+
+        var scaleFactor = 0.2 + parent.distance / this.infoName.userData.originalDistance;
+        var margin = parent.object.geometry.boundingSphere.radius;
+
+        this.infoName.scale.set(scaleFactor, scaleFactor, scaleFactor);
         this.infoPanel.lookAt(camera.position);
-        var infoNameSize = new THREE.Box3().setFromObject( this.infoName ).size();
-        this.infoPanel.position.set(vector.x - infoNameSize.x, vector.y + 40, vector.z);
+        this.infoPanel.position.set(vector.x - margin, vector.y + margin, vector.z);
     },
 
     toggleFullScreen: function(wrapper, supports) {
