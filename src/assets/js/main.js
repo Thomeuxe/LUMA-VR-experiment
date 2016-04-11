@@ -24,6 +24,10 @@ var dbg = require('debug')('luma:app');
 // Enable debug
 window.myDebug = require("debug");
 
+if (Supports.isMobile()){
+    document.getElementsByTagName('body')[0].classList.add("is-mobile") ;
+}
+
 var App = {
 
     init:function() {
@@ -54,6 +58,8 @@ var App = {
         this.$els = {
             onboarding: document.getElementById('onboarding'),
             playBtn: document.getElementById('playBtn'),
+            cardboardPlayBtn: document.getElementById('cardboardPlayBtn'),
+            gyroscopePlayBtn: document.getElementById('gyroscopePlayBtn'),
             toggleAudioBtn: document.getElementById('toggleAudioBtn'),
             wrapper: document.getElementById('wrapper'),
             window: window
@@ -70,8 +76,16 @@ var App = {
         document.addEventListener('MSFullscreenChange', this.onFullScreenChange.bind(this), false);
 
         this.$els.playBtn.addEventListener('click', this.play.bind(this));
+        this.$els.cardboardPlayBtn.addEventListener('click', this.cardboardPlay.bind(this));
+        this.$els.gyroscopePlayBtn.addEventListener('click', this.play.bind(this));
         this.$els.toggleAudioBtn.addEventListener('click', this.toggleAudio.bind(this));
         this.$els.window.addEventListener('resize', this.onWindowResize.bind(this), false );
+    },
+
+    cardboardPlay: function () {
+        this.play();
+
+        this.renderer = Renderer.setCardboardEffect();
     },
 
     play: function () {
@@ -132,7 +146,11 @@ var App = {
 
         if(percentage == 1) {
             TweenMax.set("#logo-overlay", {autoAlpha: 0});
-            TweenMax.to("#playBtn", 1, {opacity: 1, scale: 1, ease: Power4.easeInOut});
+            if (Supports.isMobile()){
+                TweenMax.to(".onboarding__mobile-buttons", 1, {opacity: 1, scale: 1, ease: Power4.easeInOut});
+            } else {
+                TweenMax.to("#playBtn", 1, {opacity: 1, scale: 1, ease: Power4.easeInOut});   
+            }
         }
 
         dbg('Global asset loading progress', percentage);
@@ -206,7 +224,6 @@ var App = {
 
         if(Supports.isMobile()) {
             this.rotationControls = Controls.create(this.camera);
-            this.renderer = Renderer.setCardboardEffect();
         } else {
             this.rotationControls = Controls.createMouse(this.camera, this.renderer);
         }
