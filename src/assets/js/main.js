@@ -226,6 +226,8 @@ var App = {
         this.renderer.render(this.scene, this.camera);
 
         Animal.update(this.animals, delta, this.camera);
+        
+        Ui.updateInfoPanel(this.scene, this.camera, Raycaster.intersected);
 
         if(this.isPlaying) {
             this.gauge.update();

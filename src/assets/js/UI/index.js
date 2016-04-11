@@ -35,7 +35,7 @@ var UI = {
         }.bind(this));
     },
 
-    openInfoPanel: function(scene, camera, parent, intersects) {
+    openInfoPanel: function(scene, camera, parent) {
         if(!this.font){
             this.loadFont(function() {
                 this.openInfoPanel();
@@ -46,36 +46,23 @@ var UI = {
         // Exit if there's no parent to target or if panel is already visible
         if(!parent || (this.infoPanel && this.infoPanel.visible)) return;
 
-        var intersect;
-        for (var i = 0; i < intersects.length; i++) {
-            if (intersects[i].object.targetable) {
-                intersect = intersects[i];
-                break;
-            }
-        }
-
-        var fontSize = intersect.distance * 0.06;
+        var fontSize = parent.distance * 0.06;
 
         if (!this.infoPanel) {
             dbg('open info panel');
             this.infoPanel = new THREE.Object3D();
-            this.infoName = this.createInfoName(parent.parent.name, fontSize);
+            this.infoName = this.createInfoName(parent.object.parent.name, fontSize);
             scene.add(this.infoPanel);
         } else {
             this.infoPanel.remove( this.infoName );
-            this.infoName = this.createInfoName(parent.parent.name, fontSize);
+            this.infoName = this.createInfoName(parent.object.parent.name, fontSize);
         }
 
         this.infoPanel.add(this.infoName);
-
-        var vector = new THREE.Vector3();
-        vector.setFromMatrixPosition( parent.matrixWorld );
-
-        this.infoPanel.lookAt(camera.position);
-        var infoNameSize = new THREE.Box3().setFromObject( this.infoName ).size();
-        this.infoPanel.position.set(vector.x - infoNameSize.x, vector.y + 40, vector.z);
-
+    
         this.infoPanel.visible = true;
+        
+        this.updateInfoPanel(scene, camera, parent);
     },
 
     createInfoName: function (name, size) {
@@ -90,6 +77,17 @@ var UI = {
         dbg('close info panel');
 
         this.infoPanel.visible = false;
+    },
+    
+    updateInfoPanel: function(scene, camera, parent) {
+        if(!parent || (this.infoPanel && !this.infoPanel.visible)) return;
+
+        var vector = new THREE.Vector3();
+        vector.setFromMatrixPosition( parent.object.matrixWorld );
+    
+        this.infoPanel.lookAt(camera.position);
+        var infoNameSize = new THREE.Box3().setFromObject( this.infoName ).size();
+        this.infoPanel.position.set(vector.x - infoNameSize.x, vector.y + 40, vector.z);
     },
 
     toggleFullScreen: function(wrapper, supports) {
