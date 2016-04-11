@@ -5,6 +5,8 @@ Raycaster = {
     collisionRaycaster: null,
     collisionVector: null,
 
+    animalsRaycasters: [],
+
     scene: null,
     camera: null,
     UI: null,
@@ -32,7 +34,23 @@ Raycaster = {
         return this;
     },
 
+    addAnimals: function(animals) {
+        for (var i = 0; i < animals.length; i++) {
+            this.addAnimal(animals[i]);
+        }
+    },
+
+    addAnimal: function(animal) {
+        this.animalsRaycasters.push({
+            animal: animal,
+            raycaster: new THREE.Raycaster(),
+            collisions: []
+        });
+    },
+
     update: function() {
+        var i;
+
         this.targetRaycaster.setFromCamera(this.center, this.camera);
         this.collisionRaycaster.set(this.camera.position, this.collisionVector);
 
@@ -40,8 +58,6 @@ Raycaster = {
         var intersects = this.targetRaycaster.intersectObjects(this.scene.children, true);
 
         var collisions = this.collisionRaycaster.intersectObjects(this.terrain.meshs);
-
-        var i;
 
         if (intersects.length > 0) {
             var nearest = null;
@@ -75,6 +91,16 @@ Raycaster = {
 
             if (collision.distance < 30) {
                 this.camera.position.setY(this.camera.position.y + 30 - collision.distance);
+            }
+        }
+
+        var ar;
+        for (i = 0; i < this.animalsRaycasters.length; i++) {
+            ar = this.animalsRaycasters[i];
+            ar.raycaster.set(ar.animal.mesh.position, this.collisionVector);
+            ar.collisions = ar.raycaster.intersectObjects(this.terrain.meshs);
+            if (ar.collisions.length > 0 && ar.collisions[0].distance < 30) {
+                ar.animal.mesh.position.setY(ar.animal.mesh.position.y + 30 - ar.collisions[0].distance);
             }
         }
     }

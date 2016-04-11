@@ -177,26 +177,38 @@ var App = {
     },
 
     createFishes: function() {
+        var a;
         for(var i = 0 ; i < this.animalQuantity; i++) {
-            this.animals.push(Fish.create(this.scene, this.listener, this.camera));
+            a = Fish.create(this.scene, this.listener, this.camera);
+            this.animals.push(a);
+            Raycaster.addAnimal(a);
         }
     },
 
     createRockbass: function() {
+        var a;
         for(var i = 0 ; i < this.animalQuantity; i++) {
-            this.animals.push(Rockbass.create(this.scene, this.listener, this.camera));
+            a = Rockbass.create(this.scene, this.listener, this.camera);
+            this.animals.push(a);
+            Raycaster.addAnimal(a);
         }
     },
 
     createCatfish: function() {
+        var a;
         for(var i = 0 ; i < this.animalQuantity; i++) {
-            this.animals.push(Catfish.create(this.scene, this.listener, this.camera));
+            a = Catfish.create(this.scene, this.listener, this.camera);
+            this.animals.push(a);
+            Raycaster.addAnimal(a);
         }
     },
 
     createJellyfish: function() {
+        var a;
         for(var i = 0 ; i < this.animalQuantity; i++) {
-            this.animals.push(Jellyfish.create(this.scene, this.listener, this.camera));
+            a = Jellyfish.create(this.scene, this.listener, this.camera);
+            this.animals.push(a);
+            Raycaster.addAnimal(a);
         }
     },
 
@@ -238,3 +250,4 @@ var App = {
 
 var app = App.init();
 app.render();
+window.app = app;
