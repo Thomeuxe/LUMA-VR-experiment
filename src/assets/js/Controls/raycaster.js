@@ -101,6 +101,9 @@ Raycaster = {
             ar.collisions = ar.raycaster.intersectObjects(this.terrain.meshs);
             if (ar.collisions.length > 0 && ar.collisions[0].distance < 30) {
                 ar.animal.mesh.position.setY(ar.animal.mesh.position.y + 30 - ar.collisions[0].distance);
+                var rx = ar.animal.mesh.rotation.x;
+                var rz = ar.animal.mesh.rotation.z;
+                ar.animal.mesh.rotation.set(rx + Math.random() / 10, 0, rz + Math.random() / 10);
             }
         }
     }
