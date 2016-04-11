@@ -280,8 +280,6 @@ var TerrainMatrix = {
         }
 
         this.currentTile = tile;
-
-        console.log("Terrain", this);
     }
 
 };
