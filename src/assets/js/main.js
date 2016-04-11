@@ -133,6 +133,7 @@ var App = {
     },
 
     assetsLoadingProgress: function(progress) {
+        dbg("loading", progress);
         this.progressStatus[progress.key] = progress.value;
         var sum = 0;
         var divider = 0;
@@ -195,39 +196,34 @@ var App = {
     },
 
     createFishes: function() {
-        var a;
-        for(var i = 0 ; i < this.animalQuantity; i++) {
-            a = Fish.create(this.scene, this.listener, this.camera);
-            this.animals.push(a);
-            Raycaster.addAnimal(a);
-        }
+        this.createAnimals(Fish, true);
     },
 
     createRockbass: function() {
-        var a;
-        for(var i = 0 ; i < this.animalQuantity; i++) {
-            a = Rockbass.create(this.scene, this.listener, this.camera);
-            this.animals.push(a);
-            Raycaster.addAnimal(a);
-        }
+        this.createAnimals(Rockbass, true);
     },
 
     createCatfish: function() {
-        var a;
-        for(var i = 0 ; i < this.animalQuantity; i++) {
-            a = Catfish.create(this.scene, this.listener, this.camera);
-            this.animals.push(a);
-            Raycaster.addAnimal(a);
-        }
+        this.createAnimals(Catfish, true);
     },
 
     createJellyfish: function() {
+        this.createAnimals(Jellyfish, false);
+    },
+
+    createAnimals: function(type, raycast) {
+        var key = "create" + type.type;
+        this.assetsLoadingProgress({key: key, value: 0});
+
         var a;
         for(var i = 0 ; i < this.animalQuantity; i++) {
-            a = Jellyfish.create(this.scene, this.listener, this.camera);
+            a = type.create(this.scene, this.listener, this.camera);
             this.animals.push(a);
-            // Raycaster.addAnimal(a);
+            if (raycast) Raycaster.addAnimal(a);
+            this.assetsLoadingProgress({key: key, value: (i+1) / (this.animalQuantity+1)});
         }
+
+        this.assetsLoadingProgress({key: key, value: 1});
     },
 
     getDevice: function() {
