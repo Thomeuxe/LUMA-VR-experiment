@@ -226,7 +226,7 @@ var App = {
         for(var i = 0 ; i < this.animalQuantity; i++) {
             a = Jellyfish.create(this.scene, this.listener, this.camera);
             this.animals.push(a);
-            Raycaster.addAnimal(a);
+            // Raycaster.addAnimal(a);
         }
     },
 
