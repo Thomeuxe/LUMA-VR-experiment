@@ -60,19 +60,22 @@ Raycaster = {
             }
         }
 
-        if (collisions.length > 1) console.warn("COLLISIONS > 1");
+        if (collisions.length > 0) {
+            var collision = collisions[0];
+            for (i = 1; i < collisions.length; i++) {
+                if (collisions[i].distance < collision.distance) {
+                    collision = collisions[i];
+                }
+            }
 
-        if (collisions.length > 0 && this.lastTerrainTile.mesh.uuid != collisions[0].object.uuid) {
-            this.lastTerrainTile = collisions[0].object.terrainTile;
-            this.terrain.setCurrentTile(this.lastTerrainTile);
-        }
+            if (this.lastTerrainTile.mesh.uuid != collision.object.uuid) {
+                this.lastTerrainTile = collision.object.terrainTile;
+                this.terrain.setCurrentTile(this.lastTerrainTile);
+            }
 
-        if (collisions.length > 0 && collisions[0].distance < 60) {
-            this.camera.position.set(
-                this.camera.position.x,
-                this.camera.position.y + 60 - collisions[0].distance,
-                this.camera.position.z
-            );
+            if (collision.distance < 60) {
+                this.camera.position.setY(this.camera.position.y + 60 - collision.distance);
+            }
         }
     }
 };

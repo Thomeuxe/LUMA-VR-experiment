@@ -6,10 +6,16 @@ var Terrain = {
     texturePath: "./assets/img/topography.jpg",
     color: 0x006994,
 
-    width: 1024,
-    height: 1024,
-    quality: 0.25,
+    // terrain width
+    width: 512,
+    // terrain quality (vertices = width * quality)
+    quality: 0.3,
+    // terrain maximum height
+    maxHeight: 255,
+    // heightmap blur factor
     softness: 10,
+    // if true, recalculate heightmap imageData to fit between 0 and 255
+    normalize: true,
 
     loadAssets: function(successCb, progressCb) {
         dbg('Load terrain assets');
@@ -66,10 +72,10 @@ var Terrain = {
         if (Terrain.quality < 0.01) Terrain.quality = 0.01;
 
         this.imgc.width = Terrain.width * Terrain.quality;
-        this.imgc.height = Terrain.height * Terrain.quality;
+        this.imgc.height = Terrain.width * Terrain.quality;
         this.ictx.drawImage(cvs, 0, 0, cvs.width, cvs.height, 0, 0, this.imgc.width, this.imgc.height);
 
-        this.data = this.imageDataMinMax(this.blur(Terrain.softness)).data;
+        this.data = this.imageDataMinMax(this.blur(Terrain.softness));
 
         this.texture.mapping = THREE.SphericalReflectionMapping;
         this.texture.wrapS = THREE.RepeatWrapping;
@@ -92,46 +98,58 @@ var Terrain = {
         var m = this.imgc.width;
         var n = this.imgc.height;
 
-        // find range
-        var minimum = Infinity;
-        var maximum = 0;
-        var first = true;
-        var d = 0;
-        var i;
-
-        for (i = 0; i < n * m; i++) {
-            try {d = image[i]}
-            catch(e) {console.log(e); console.log("i: "+i); console.log("image: "+image); break}
-
-            minimum = Math.min(minimum, d);
-            maximum = Math.max(maximum, d);
-
-            if (i == m*n-1) first = false;
-        }
-
         var finalImage = this.ictx.createImageData(m, n);
         var data = finalImage.data;   // pixel data array of (width*height*4) elements
-        var ceil = 255;
-        var floor = 0;
 
-        var newmin = Infinity;
-        var newmax = 0;
+        if (Terrain.normalize) {
+            // find range
+            var minimum = Infinity;
+            var maximum = 0;
+            var first = true;
+            var d = 0;
+            var i;
 
-        // Convert to visible
-        for (i = 0; i < n * m; i++) {
-            d = image[i];
-            normd = ((ceil - floor) * (d - minimum))/(maximum - minimum) + floor;
-            newmin = Math.min(newmin, normd);
-            newmax = Math.max(newmax, normd);
-            data[i*4]   = normd; //r
-            data[i*4+1] = normd; //g
-            data[i*4+2] = normd; //b
-            data[i*4+3] = 255;   //a
+            for (i = 0; i < n * m; i++) {
+                try {d = image[i]}
+                catch(e) {console.log(e); console.log("i: "+i); console.log("image: "+image); break}
+
+                minimum = Math.min(minimum, d);
+                maximum = Math.max(maximum, d);
+
+                if (i == m*n-1) first = false;
+            }
+
+            var newmin = Infinity;
+            var newmax = 0;
+            var ceil = 255;
+            var floor = 0;
+
+            // Convert to visible
+            for (i = 0; i < n * m; i++) {
+                d = image[i];
+                normd = ((ceil - floor) * (d - minimum))/(maximum - minimum) + floor;
+                newmin = Math.min(newmin, normd);
+                newmax = Math.max(newmax, normd);
+                data[i*4]   = normd; //r
+                data[i*4+1] = normd; //g
+                data[i*4+2] = normd; //b
+                data[i*4+3] = 255;   //a
+            }
+
+        } else {
+
+            for (i = 0; i < n * m; i++) {
+                data[i*4]   = image[i]; //r
+                data[i*4+1] = image[i]; //g
+                data[i*4+2] = image[i]; //b
+                data[i*4+3] = 255;      //a
+            }
+
         }
 
         this.ictx.putImageData(finalImage, 0, 0);
 
-        return finalImage;
+        return finalImage.data;
     },
 
     blur: function(radius) {
@@ -249,7 +267,7 @@ var TerrainMatrix = {
             this.zMax--;
 
         } else if (tile.position.z > this.currentTile.position.z) {
-            max = this.zMax - 1;
+            max = this.zMax + 1;
 
             for (x = this.xMin; x <= this.xMax; x++) {
                 this.matrix[x][max] = this.matrix[x][this.zMin];
@@ -258,10 +276,12 @@ var TerrainMatrix = {
             }
 
             this.zMax = max;
-            this.zMin--;
+            this.zMin++;
         }
 
         this.currentTile = tile;
+
+        console.log("Terrain", this);
     }
 
 };
@@ -269,9 +289,6 @@ var TerrainMatrix = {
 var TerrainTile = function(data, position) {
     dbg('create tile');
     var self = this;
-
-    this.width = Terrain.width;
-    this.height = Terrain.height;
 
     if (!TerrainTile.base) {
         this.createMesh(
@@ -292,8 +309,10 @@ var TerrainTile = function(data, position) {
             this.x = x;
             this.z = z;
 
-            self.mesh.position.setX(this.x * self.width);
-            self.mesh.position.setZ(this.z * self.height);
+            self.mesh.position.setX(this.x * Terrain.width);
+            self.mesh.position.setZ(this.z * Terrain.width);
+
+            console.log("pos", x, z, self.mesh.position.x, self.mesh.position.z);
         }
     };
 
@@ -318,12 +337,15 @@ TerrainTile.prototype.createMesh = function(geometry, material) {
 
 TerrainTile.prototype.createGeometry = function(data) {
     dbg('create tile Geometry');
-    this.geometry = new THREE.PlaneBufferGeometry(this.width, this.height, Terrain.imgc.width - 1, Terrain.imgc.height - 1);
+    this.geometry = new THREE.PlaneBufferGeometry(Terrain.width, Terrain.width, Terrain.imgc.width - 1, Terrain.imgc.height - 1);
     this.geometry.rotateX(- Math.PI / 2);
 
+    var h = Terrain.maxHeight / 255;
     for (var i = 0, j = 0, l = this.geometry.attributes.position.array.length - 1; i < l; i += 3, j += 4) {
-        this.geometry.attributes.position.array[i + 1] = data[j];
+        this.geometry.attributes.position.array[i + 1] = data[j] * h;
     }
+
+    console.log(this.geometry.attributes.position.array);
 
     return this.geometry;
 };
