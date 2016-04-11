@@ -51,11 +51,16 @@ canvas {
       top: 50%;
       left: 50%;
       transform: translate3d(-50%, -50%, 0) translate3d(-10px, 0, 0);
+      max-width: 100%;
       z-index: 10;
     }
 
     &__background {
       clip-path: inset(0 100% 0 0);
+
+      @media (max-width: 700px) {
+        width: 250px;
+      }
     }
   }
 
