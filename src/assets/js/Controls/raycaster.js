@@ -73,8 +73,8 @@ Raycaster = {
                 this.terrain.setCurrentTile(this.lastTerrainTile);
             }
 
-            if (collision.distance < 60) {
-                this.camera.position.setY(this.camera.position.y + 60 - collision.distance);
+            if (collision.distance < 30) {
+                this.camera.position.setY(this.camera.position.y + 30 - collision.distance);
             }
         }
     }
