@@ -20,7 +20,7 @@ var Fish = _.assign({
 
     this.goForward(that);
 
-    this.initCollider(that, 0.1);
+    this.initCollider(that, 1);
     this.initAnimation(that);
     this.initAudio(that, 'assets/sounds/fish_noise.mp3', listener);
 
@@ -30,6 +30,7 @@ var Fish = _.assign({
   assetsLoaded: function (asset, cb) {
     dbg('fish assets loaded');
     this.asset = asset.children[0].children[0];
+    this.asset.scale.set(0.8, 0.8, 0.8);
     cb();
   },
 
