@@ -36,7 +36,7 @@
             "DbgIndex": 0,
             "transparent": false,
             "mapDiffuseRepeat": [1,1],
-            "doubleSided": true,
+            "doubleSided": false,
             "specularCoef": 50,
             "mapDiffuseAnisotropy": 1,
             "mapDiffuse": "fish.jpg",
