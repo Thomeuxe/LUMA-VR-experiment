@@ -65,7 +65,7 @@ var Animal = {
     optionalScaleFactor = optionalScaleFactor || 1;
     var box = new THREE.Box3().setFromObject(that.mesh);
     var geometryCollider = new THREE.SphereGeometry(box.getBoundingSphere().radius * optionalScaleFactor, 6, 6);
-    that.meshCollider = new THREE.Mesh(geometryCollider, new THREE.MeshBasicMaterial({wireframe: true, transparent: true, opacity: 0.1}));
+    that.meshCollider = new THREE.Mesh(geometryCollider, new THREE.MeshBasicMaterial({transparent: true, opacity: 0}));
     that.mesh.add(that.meshCollider);
 
     that.mesh.castShadow = true;

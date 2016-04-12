@@ -93,6 +93,14 @@ canvas {
       margin: 0 auto 10px;
     }
   }
+
+  &__message {
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
 }
 
 .is-mobile .onboarding__mobile-buttons {
