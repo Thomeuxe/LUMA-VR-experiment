@@ -134,7 +134,6 @@ var App = {
     },
 
     assetsLoadingProgress: function(progress) {
-        dbg("loading", progress);
         this.progressStatus[progress.key] = progress.value;
         var sum = 0;
         var divider = 0;

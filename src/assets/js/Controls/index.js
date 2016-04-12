@@ -62,7 +62,6 @@ var Controls = {
     },
 
     goForward: function () {
-        console.log(this);
         if (this.active)
             TweenMax.to(this.camera, 1, {acceleration: -6, ease: Quad.easeIn});
     },
