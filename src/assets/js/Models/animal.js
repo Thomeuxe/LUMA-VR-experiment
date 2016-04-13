@@ -89,7 +89,7 @@ var Animal = {
   },
 
   goForward: function (that) {
-    that.speed = Math.random() * 20 + 20;
+    that.speed = Math.random() * 20 + 10;
   }
 };
 
