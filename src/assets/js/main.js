@@ -257,8 +257,13 @@ var App = {
         Ui.updateInfoPanel(this.scene, this.camera, Raycaster.intersected);
 
         if(this.isPlaying) {
-            this.gauge.update();
             Sounds.update();
+
+            // Update gauge once per second
+            setTimeout( updateGauge.bind(this), 1000 );
+            function updateGauge() {
+                this.gauge.update();
+            }
         }
     }
 };
