@@ -14,7 +14,7 @@ var Jellyfish = require('./Models/jellyfish.js');
 var Catfish = require('./Models/catfish.js');
 var Particles = require('./Models/particles.js');
 var Lights = require('./Models/lights.js');
-var Lantern = require('./Models/lantern.js');
+// var Lantern = require('./Models/lantern.js');
 var Gauge = require('./UI/gauge.js');
 var Controls = require('./Controls');
 var Raycaster = require('./Controls/raycaster.js');
@@ -168,7 +168,7 @@ var App = {
     createElements: function() {
         dbg('create elements');
         Lights.addAsChild(this.camera, this.scene);
-        Lantern.attachAsChild(this.scene);
+        // Lantern.attachAsChild(this.scene);
         this.particles = Particles.create(this.camera);
     },
 
