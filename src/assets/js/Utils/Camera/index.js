@@ -13,8 +13,8 @@ var Camera = {
         this.camera.updateProjectionMatrix();
     },
     
-    render: function() {
-        this.camera.translateZ(this.camera.acceleration);
+    render: function(delta) {
+        this.camera.translateZ(this.camera.acceleration * delta);
     }
 };
 

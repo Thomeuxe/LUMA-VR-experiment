@@ -248,7 +248,7 @@ var App = {
             this.rotationControls.update();
             if (this.raycaster) this.raycaster.update();
         }
-        Camera.render();
+        Camera.render(delta);
 
         this.renderer.render(this.scene, this.camera);
 

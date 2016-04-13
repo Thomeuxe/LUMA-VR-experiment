@@ -63,7 +63,7 @@ var Controls = {
 
     goForward: function () {
         if (this.active)
-            TweenMax.to(this.camera, 1, {acceleration: -6, ease: Quad.easeIn});
+            TweenMax.to(this.camera, 1, {acceleration: -60, ease: Quad.easeIn});
     },
 
     stop: function (immediately) {
