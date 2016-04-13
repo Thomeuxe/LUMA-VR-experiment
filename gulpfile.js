@@ -41,6 +41,7 @@ var FILES = {
     css: DIR.css + "/*.css",
     sass: DIR.sass + "/**/*.scss",
     js: DIR.js + "/**/*.js",
+    mainJs: DIR.js + "/main.js",
     images: DIR.images + "/**/*",
     svg: DIR.src + "/img/**/*.svg",
     build: DIR.build + "**/*"
@@ -96,7 +97,7 @@ gulp.task('sass', function () {
  */
 
 gulp.task('imagemin', function () {
-    return gulp.src(FILES.images)
+    return gulp.src([FILES.images, DIR.js + "/Models/**/*"])
         .pipe(imagemin({
             progressive: true,
             svgoPlugins: [
@@ -184,7 +185,7 @@ gulp.task('build-vendors', ['src-build', 'build-clean'], function () {
 
     return gulp.src(mainBowerFiles({
             paths: {
-                bowerDirectory: FILES.vendors,
+                bowerDirectory: DIR.vendors,
                 bowerrc: '.bowerrc',
                 bowerJson: 'bower.json'
             }
@@ -210,22 +211,37 @@ gulp.task('build-scripts', ['src-build', 'build-clean'], function () {
     var filterJS = gulpFilter('**/*.js', {restore: true});
     var filterCSS = gulpFilter('**/*.css', {restore: true});
 
-    return gulp.src([FILES.js, FILES.css])
+    return gulp.src([FILES.mainJs, FILES.css])
         .pipe(filterJS)
-        .pipe(concat('scripts.min.js'))
+        .pipe(browserify({
+            insertGlobals : true
+        }))
         .pipe(uglify())
+        .pipe(concat('scripts.min.js'))
+        .pipe(gulp.dest(DIR.build + "/assets/js"))
         .pipe(filterJS.restore)
         .pipe(filterCSS)
         .pipe(concat('styles.min.css'))
-        .pipe(uncss({
+        /*.pipe(uncss({
             html: [FILES.watchable],
             ignore: [
                 /\.js-/
             ]
-        }))
+        }))*/
         .pipe(cleanCSS({compatibility: 'ie8'}))
-        .pipe(filterCSS.restore)
-        .pipe(gulp.dest(DIR.build + "/assets"));
+        .pipe(gulp.dest(DIR.build + "/assets/css"))
+        .pipe(filterCSS.restore);
+});
+
+
+/********
+ *
+ * Copy images, fonts, audio files
+ */
+
+gulp.task('build-copy', function() {
+    return gulp.src([DIR.assets + '/*.*', DIR.assets + '/**/*.*'], {base: DIR.assets})
+        .pipe(gulp.dest(DIR.build + "/assets/"));
 });
 
 
@@ -234,10 +250,10 @@ gulp.task('build-scripts', ['src-build', 'build-clean'], function () {
  * Script and style injection task
  */
 
-gulp.task('build-inject', ['src-build', 'build-clean', 'build-vendors', 'build-scripts'], function () {
+gulp.task('build-inject', ['src-build', 'build-clean', 'build-copy', 'build-vendors', 'build-scripts'], function () {
     var target = gulp.src(FILES.watchable);
 
-    var userFiles = gulp.src([DIR.build + "/assets/scripts.min.js", DIR.build + "/assets/styles.min.css"]);
+    var userFiles = gulp.src([DIR.build + "/assets/js/scripts.min.js", DIR.build + "/assets/css/styles.min.css"]);
     var vendorsFiles = gulp.src(DIR.build + "/assets/vendors.min.js");
 
     return target.pipe(gulp.dest(DIR.build))
