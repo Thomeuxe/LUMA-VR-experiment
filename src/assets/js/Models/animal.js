@@ -39,19 +39,18 @@ var Animal = {
 
   update: function(instances, delta, camera) {
     var cameraDistance;
-    var self = this;
     instances.forEach(function (instance) {
       cameraDistance = instance.mesh.position.distanceTo( camera.position );
       if (cameraDistance > 500){
-        self.setPosition(instance, camera);
+        this.setPosition(instance, camera);
       }
 
-      instance.mesh.translateOnAxis(instance.translateAxis, instance.speed);
+      instance.mesh.translateOnAxis(instance.translateAxis, instance.speed * delta);
 
       if (instance.mixer) {
         instance.mixer.update(delta);
       }
-    });
+    }, this);
   },
 
   setPosition: function (that, camera) {
@@ -90,7 +89,7 @@ var Animal = {
   },
 
   goForward: function (that) {
-    that.speed = Math.random() + 0.5;
+    that.speed = Math.random() * 20 + 20;
   }
 };
 
