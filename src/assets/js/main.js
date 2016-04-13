@@ -30,7 +30,11 @@ if (Supports.isMobile()){
 
 var App = {
 
-    init:function() {
+    start: function() {
+        return this.init();
+    },
+
+    init: function() {
         dbg('init');
         this.isPlaying = false;
         this.animalQuantity = 3;
@@ -154,6 +158,7 @@ var App = {
 
             }
             TweenMax.to("#waitingBackground", 1.5, {opacity: 0, ease: Power4.easeInOut});
+            this.render();
         }
 
         dbg('Global asset loading progress', percentage);
@@ -246,7 +251,7 @@ var App = {
 
         if(this.isPlaying) {
             this.rotationControls.update();
-            if (this.raycaster) this.raycaster.update();
+            this.raycaster.update();
         }
         Camera.render(delta);
 
@@ -273,5 +278,4 @@ var App = {
     }
 };
 
-var app = App.init();
-app.render();
+var app = App.start();
