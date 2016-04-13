@@ -260,11 +260,16 @@ var App = {
             Sounds.update();
 
             // Update gauge once per second
-            setTimeout( updateGauge.bind(this), 1000 );
-            function updateGauge() {
-                this.gauge.update();
+            if (!this.gaugeUpdatePending) {
+                setTimeout(this.updateGauge.bind(this), 1000);
+                this.gaugeUpdatePending = true;
             }
         }
+    },
+
+    updateGauge: function() {
+        this.gauge.update();
+        this.gaugeUpdatePending = false;
     }
 };
 
