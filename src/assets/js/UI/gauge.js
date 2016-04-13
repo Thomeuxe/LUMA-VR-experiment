@@ -42,7 +42,7 @@ var Gauge = {
     var newValue = Math.round(this.camera.position.y / 50) - this.max;
     if(this.locationText && (this.value != newValue)){
       this.location.position.setY(newValue/this.max * 2 + 1.25);
-      this.locationText.geometry = new THREE.TextGeometry((newValue + 2500) + "m", {font: this.UI.font, size: 0.05, height: 0.01});
+      this.locationText.geometry = new THREE.TextGeometry((newValue + 2800) + "m", {font: this.UI.font, size: 0.05, height: 0.01});
       //this.locationText.computeBoundingBox();
       this.value = newValue;
     }
