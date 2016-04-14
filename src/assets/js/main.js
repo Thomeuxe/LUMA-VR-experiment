@@ -90,6 +90,7 @@ var App = {
         this.play();
 
         this.renderer = Renderer.setCardboardEffect();
+        this.gauge.setMargin(0.9);
     },
 
     play: function () {
@@ -126,6 +127,7 @@ var App = {
 
     onWindowResize: function() {
         Ui.onWindowResize(Camera, Renderer);
+        Gauge.onWindowResize();
     },
 
     initAssets: function() {
@@ -184,7 +186,8 @@ var App = {
     },
 
     createUI: function() {
-        this.gauge = Gauge.create(this.camera, Ui);
+        this.gauge = Gauge.create(this.camera, Ui, Renderer);
+        window.gauge = this.gauge;
         this.target = Ui.createTarget(this.camera);
     },
 
