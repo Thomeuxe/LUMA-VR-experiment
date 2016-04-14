@@ -97,7 +97,7 @@ gulp.task('sass', function () {
  */
 
 gulp.task('imagemin', function () {
-    return gulp.src([FILES.images, DIR.js + "/Models/**/*"])
+    return gulp.src([FILES.images, DIR.js + "/Models/**/*"], {base: DIR.assets})
         .pipe(imagemin({
             progressive: true,
             svgoPlugins: [
@@ -106,7 +106,7 @@ gulp.task('imagemin', function () {
             ],
             use: [pngquant()]
         }))
-        .pipe(gulp.dest(DIR.images));
+        .pipe(gulp.dest(DIR.assets));
 });
 
 
@@ -238,9 +238,19 @@ gulp.task('build-scripts', ['src-build', 'build-clean'], function () {
  *
  * Copy images, fonts, audio files
  */
-// TODO: Do not move all files
+
 gulp.task('build-copy', function() {
-    return gulp.src([DIR.assets + '/*.*', DIR.assets + '/**/*.*'], {base: DIR.assets})
+    return gulp.src([
+        DIR.assets + '/css/*.min.css',
+        DIR.assets + '/fonts/*.*',
+        DIR.assets + '/img/*.*',
+        DIR.assets + '/js/Models/skinned/*.*',
+        DIR.assets + '/js/Sounds/data/*.*',
+        DIR.assets + '/js/*.min.js',
+        DIR.assets + '/sounds/*.*',
+        DIR.assets + '/vendors/canvg/dist/*.bundle.min.js',
+        DIR.assets + '/*.min.*'
+    ], {base: DIR.assets})
         .pipe(gulp.dest(DIR.build + "/assets/"));
 });
 
