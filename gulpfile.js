@@ -238,7 +238,7 @@ gulp.task('build-scripts', ['src-build', 'build-clean'], function () {
  *
  * Copy images, fonts, audio files
  */
-
+// TODO: Do not move all files
 gulp.task('build-copy', function() {
     return gulp.src([DIR.assets + '/*.*', DIR.assets + '/**/*.*'], {base: DIR.assets})
         .pipe(gulp.dest(DIR.build + "/assets/"));
